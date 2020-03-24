@@ -1,14 +1,18 @@
 package Objects;
 
 public class Cell {
-    private int type;
+    private CellType type;
     private boolean checked;
-    private boolean isMarked;
+    private boolean isMarked = false;
     private int neighbourMines;
 
 
-    public int getType() {
+    public CellType getType() {
         return type;
+    }
+
+    public void setType(CellType type) {
+        this.type = type;
     }
 
     public boolean isChecked() {
