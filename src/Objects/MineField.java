@@ -132,7 +132,9 @@ public class MineField {
                     getFromField(i, j).setChecked(true);
                     // Using try-catch as a control structure in Java isn't good. Might change it later to instead have 5 seperate
                     // blocks for the edge cases (left, top, right, down or none of those). Readability would suffer.
-                } catch(IndexOutOfBoundsException e) {}
+                } catch(IndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -154,14 +156,14 @@ public class MineField {
         }
         // Opening the neighbours for each Cell on each vertical, perpendicular line intersecting with the horizontal line of the original Cell
 
-        for (i = horizontalLineX;i < width && getFromField(i, y).getType() == CellType.Empty;i++){
+        for (int i = horizontalLineX;i < width && getFromField(i, y).getType() == CellType.Empty;i++){
             // One for-loop for getting all Cells above, and one for all Cells below the horizontal line
             // All Cells above
-            for(j = y;j => 0 && getFromField(i, j).getType == CellType.Empty; j--){
+            for(int j = y; j >= 0 && getFromField(i, j).getType() == CellType.Empty; j--){
                 checkNeighbours(i, j);
             }
             // Below
-            for(j = y;j < height && getFromField(i, j).getType == CellType.Empty; j++){
+            for(int j = y;j < height && getFromField(i, j).getType() == CellType.Empty; j++){
                 checkNeighbours(i, j);
             }
             checkNeighbours(i, y);
@@ -177,14 +179,14 @@ public class MineField {
         }
         // Opening the neighbours for each Cell on each horizontal, perpendicular line intersecting with the vertical line of the original Cell
 
-        for (i = verticalLineY;i < height && getFromField(x, i).getType() == CellType.Empty;i++){
+        for (int i = verticalLineY;i < height && getFromField(x, i).getType() == CellType.Empty;i++){
             // One for-loop for getting all Cells left, and one for all Cells right of the vertical line
             // All Cells left
-            for(j = x;j => 0 && getFromField(j, i).getType == CellType.Empty; j--){
+            for(int j = x;j >= 0 && getFromField(j, i).getType() == CellType.Empty; j--){
                 checkNeighbours(j, i);
             }
             // Right
-            for(j = x;j < width && getFromField(j, i).getType == CellType.Empty; j++){
+            for(int j = x;j < width && getFromField(j, i).getType() == CellType.Empty; j++){
                 checkNeighbours(j, i);
             }
             checkNeighbours(x, i);
