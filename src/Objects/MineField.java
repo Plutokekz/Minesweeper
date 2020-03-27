@@ -124,72 +124,89 @@ public class MineField {
         }
     }
 
-    // Helping Method for showNeighbours, opens all 9 neighbouring Cells.
+    /**
+     *  Helping Method for showNeighbours, opens all 8 neighbouring Cells.
+     * @param x index x
+     * @param y index y
+     */
     private void checkNeighbours(int x, int y){
         for(int i = x - 1;i < x + 2; i++){
-            for(int j = y - 1;i < y + 2; j++){
+            for(int j = y - 1;j < y + 2; j++){
                 try{
                     getFromField(i, j).setChecked(true);
-                    // Using try-catch as a control structure in Java isn't good. Might change it later to instead have 5 seperate
-                    // blocks for the edge cases (left, top, right, down or none of those). Readability would suffer.
-                } catch(IndexOutOfBoundsException e) {
-                    e.printStackTrace();
-                }
+                    /**
+                      Using try-catch as a control structure in Java isn't good. Might change it later to instead have 5 seperate
+                      blocks for the edge cases (left, top, right, down or none of those). Readability would suffer.
+                      */
+                } catch(IndexOutOfBoundsException e) {}
             }
         }
     }
 
-    // Called upon a click on an empty Cell(whose Coords are the argument of showNeighbours.) Will open all neighbouring empty cells and any adjacent number Cells.
-// Not using a recursive function for perfomance reasons. Instead, the method will first find the leftmost nearest Cell containing a number,
-// then go along the horizontal line of the selected Cell and open the neighbours for each empty Cell on each vertical line
-// that is perpendicular to and intersecting with the horizontal line. Same procedure is then repeated for the vertical line of the selected Cell.
-    public void showNeighbours(int x, int y) {
-        // TODO: Testing once the other classes are finished.
+    /**
+     * Helping function for showNeigbours
+     *
+     * @param startingPointChanging starting coordinate of line along the orientation of the line
+     * @param startingPointConstant starting coordinate of line that stays constant
+     * @param dimensions height and width of the field. The first in the array will be the primary line, of which all
+     *                   perpendicular and intersecting lines will be opened. So if startingPointChanging is an x-coordinate,
+     *                   then the first entry in dimensions should be the width.
+     */
+    private void openLine(int startingPointChanging, int startingPointConstant, int[] dimensions){
+        for (int i = startingPointChanging;i < width && getFromField(i, startingPointConstant).getType() == CellType.Empty;i++){
+            /**
+             * One for-loop for getting all Cells above, and one for all Cells below the horizontal line
+             */
+            for(int j = startingPointConstant;j >= 0 && getFromField(i, j).getType == CellType.Empty; j--){
+                checkNeighbours(i, j);
+            }
+            for(int j = startingPointConstant;j < height && getFromField(i, j).getType == CellType.Empty; j++){
+                checkNeighbours(i, j);
+            }
+            checkNeighbours(i, startingPointConstant);
+        }
+    }
 
-        // Working with horizontal line of the called Cell ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // Finding the coordinate of the leftmost empty cell on the horizontal line
+    /** Called upon a click on an empty Cell(whose Coords are the argument of showNeighbours.) Will open all neighbouring empty cells and any adjacent number Cells.
+     * Not using a recursive function for perfomance reasons. Instead, the method will first find the leftmost nearest Cell containing a number,
+     * then go along the horizontal line of the selected Cell and open the neighbours for each empty Cell on each vertical line
+     * that is perpendicular to and intersecting with the horizontal line. Same procedure is then repeated for the vertical line of the selected Cell.
+     */
+
+    public void showNeighbours(int x, int y) {
+
+        /** TODO: Testing once the other classes are finished.
+
+         * Working with horizontal line of the called Cell ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         */
+        /**
+         Finding the coordinate of the leftmost empty cell on the horizontal line
+         */
         int horizontalLineX = 0;
         if (x > 0) {
             for (int i = x;i > 0 && getFromField(i - 1, y).getType() == CellType.Empty; i--){
                 horizontalLineX = i - 1;
             }
-        }
-        // Opening the neighbours for each Cell on each vertical, perpendicular line intersecting with the horizontal line of the original Cell
+        }/**
+         * Opening the neighbours for each Cell on each vertical, perpendicular line intersecting with the horizontal line of the original Cell
+         */
 
-        for (int i = horizontalLineX;i < width && getFromField(i, y).getType() == CellType.Empty;i++){
-            // One for-loop for getting all Cells above, and one for all Cells below the horizontal line
-            // All Cells above
-            for(int j = y; j >= 0 && getFromField(i, j).getType() == CellType.Empty; j--){
-                checkNeighbours(i, j);
-            }
-            // Below
-            for(int j = y;j < height && getFromField(i, j).getType() == CellType.Empty; j++){
-                checkNeighbours(i, j);
-            }
-            checkNeighbours(i, y);
-        }
-
-        // Working with vertical line of the called Cell ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // Finding the coordinate of the uppermost empty Cell on the vertical line
+        openLine(horizontalLineX, y,new int[] {width, height});
+        /**
+         * Working with vertical line of the called Cell ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         */
+        /**
+         Finding the coordinate of the uppermost empty cell on the vertical line
+         */
         int verticalLineY = 0;
         if (y > 0) {
             for (int i = y;i > 0 && getFromField(x, i).getType() == CellType.Empty; i--){
                 verticalLineY = i - 1;
             }
         }
-        // Opening the neighbours for each Cell on each horizontal, perpendicular line intersecting with the vertical line of the original Cell
-
-        for (int i = verticalLineY;i < height && getFromField(x, i).getType() == CellType.Empty;i++){
-            // One for-loop for getting all Cells left, and one for all Cells right of the vertical line
-            // All Cells left
-            for(int j = x;j >= 0 && getFromField(j, i).getType() == CellType.Empty; j--){
-                checkNeighbours(j, i);
-            }
-            // Right
-            for(int j = x;j < width && getFromField(j, i).getType() == CellType.Empty; j++){
-                checkNeighbours(j, i);
-            }
-            checkNeighbours(x, i);
-        }
+        /**
+         * Opening the neighbours for each Cell on each horizontal, perpendicular line intersecting with the vertical line of the original Cell
+         */
+        openLine(verticalLineY, x,new int[] {height, width});
     }
 }
