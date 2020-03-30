@@ -1,5 +1,7 @@
 package UI;
 
+import javax.swing.*;
+
 public class FieldPanel {
-    //TODO
+    private JPanel panel1;
 }

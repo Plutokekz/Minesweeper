@@ -52,12 +52,12 @@ public class MineField {
         Cell cellToMark = getFromField(x, y);
         if (cellToMark.isMarked()) {
             cellToMark.setMarked(false);
-            if (cellToMark.getType() == CellType.MINE) {
+            if (cellToMark.getType() == CellType.Mine) {
                 minesRemaining++;
             }
         } else {
             cellToMark.setMarked(true);
-            if (cellToMark.getType() == CellType.MINE) {
+            if (cellToMark.getType() == CellType.Mine) {
                 minesRemaining--;
                 if (minesRemaining == 0) {
                     win = true;
@@ -105,20 +105,20 @@ public class MineField {
     public void leftClick(int x, int y) {
         Cell cellClicked = getFromField(x, y);
         switch (cellClicked.getType()) {
-            case MINE:
+            case Mine:
                 lost = true;
                 cellClicked.setChecked(true);
                 //TODO run some method to end the game
                 break;
-            case EMPTY:
+            case Empty:
                 showNeighbours(x , y);
                 //TODO update Visuals
                 break;
-            case NUMBER:
+            case Number:
                 cellClicked.setChecked(true);
                 //TODO update Visuals
                 break;
-            case DOES_NOT_EXIST:
+            case DoesNotExist:
                 //TODO nothing happens here
                 break;
         }
@@ -153,14 +153,14 @@ public class MineField {
      *                   then the first entry in dimensions should be the width.
      */
     private void openLine(int startingPointChanging, int startingPointConstant, int[] dimensions){
-        for (int i = startingPointChanging; i < width && getFromField(i, startingPointConstant).getType() == CellType.EMPTY; i++){
+        for (int i = startingPointChanging; i < width && getFromField(i, startingPointConstant).getType() == CellType.Empty; i++){
             /**
              * One for-loop for getting all Cells above, and one for all Cells below the horizontal line
              */
-            for(int j = startingPointConstant; j >= 0 && getFromField(i, j).getType() == CellType.EMPTY; j--){
+            for(int j = startingPointConstant; j >= 0 && getFromField(i, j).getType() == CellType.Empty; j--){
                 checkNeighbours(i, j);
             }
-            for(int j = startingPointConstant; j < height && getFromField(i, j).getType() == CellType.EMPTY; j++){
+            for(int j = startingPointConstant; j < height && getFromField(i, j).getType() == CellType.Empty; j++){
                 checkNeighbours(i, j);
             }
             checkNeighbours(i, startingPointConstant);
@@ -184,7 +184,7 @@ public class MineField {
          */
         int horizontalLineX = 0;
         if (x > 0) {
-            for (int i = x; i > 0 && getFromField(i - 1, y).getType() == CellType.EMPTY; i--){
+            for (int i = x; i > 0 && getFromField(i - 1, y).getType() == CellType.Empty; i--){
                 horizontalLineX = i - 1;
             }
         }/**
@@ -200,7 +200,7 @@ public class MineField {
          */
         int verticalLineY = 0;
         if (y > 0) {
-            for (int i = y; i > 0 && getFromField(x, i).getType() == CellType.EMPTY; i--){
+            for (int i = y; i > 0 && getFromField(x, i).getType() == CellType.Empty; i--){
                 verticalLineY = i - 1;
             }
         }
