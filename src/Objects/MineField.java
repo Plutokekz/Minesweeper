@@ -2,25 +2,24 @@ package Objects;
 
 public class MineField {
 
-    private int amountMines, minesRemaining, width, height;
+    private int firstX, firstY, minesRemaining, width, height;
     private boolean lost = false, win = false;
 
     private Cell[][] field;
     private MineHandler mineHandler;
 
 
-    public MineField(int width, int height, int amountMines, MineHandler mineHandler) {
-        this.width = width;
-        this.height = height;
-        this.amountMines = amountMines;
+    public MineField(int firstX, int firstY, MineHandler mineHandler) {
+        this.firstX = firstX;
+        this.firstY = firstY;
         this.mineHandler = mineHandler;
     }
 
     /**
      * Generates a new minefield
      **/
-    public void generateMines(int amountMines) {
-        field = mineHandler.generateMines(width, height, amountMines);
+    public void generateMines() {
+        field = mineHandler.generateMines(firstX, firstY);
     }
 
     /**
@@ -28,7 +27,7 @@ public class MineField {
      * generates a new field
      **/
     private void reset() {
-        generateMines(amountMines);
+        generateMines();
         lost = false;
     }
 

@@ -16,7 +16,6 @@ public class Cell {
         this.neighbourMines = neighbourMines;
     }
 
-
     public CellType getType() {
         return type;
     }
