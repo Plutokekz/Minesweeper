@@ -5,5 +5,5 @@ public enum  CellType {
     Number,
     Empty,
     DoesNotExist,
-    FirstClick
+    NoMines
 }
