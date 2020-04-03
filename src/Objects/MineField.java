@@ -1,24 +1,51 @@
 package Objects;
 
-import Objects.Temp.Field;
+import Objects.BaseObjects.Field;
 
 public class MineField {
 
-    private int minesRemaining, width, height;
+    private final int width, height;
+    private final MineHandler mineHandler;
     private boolean lost = false, win = false;
 
     private Field field;
-    private MineHandler mineHandler;
+    private int actualMinesRemaining, minesRemaining;
 
 
     public MineField(MineHandler mineHandler, int height, int width) {
         this.height = height;
         this.width = width;
         this.mineHandler = mineHandler;
+        this.actualMinesRemaining = mineHandler.getAmountMines();
+        this.minesRemaining = mineHandler.getAmountMines();
     }
 
     public Field getField() {
         return field;
+    }
+
+
+    // Debugging
+    public void showField() {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                field.getCellFromField(x, y).setChecked(true);
+            }
+        }
+    }
+
+    /**
+     * Marks all all the Mines as Clicked so they are shown
+     */
+    public void showRemainingMines() {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Cell cell = field.getCellFromField(x, y);
+                if (cell.getType() == CellType.Mine) {
+                    cell.setChecked(true);
+                }
+            }
+        }
     }
 
     /**
@@ -32,37 +59,32 @@ public class MineField {
      * Resets the game after a loos or something else
      * generates a new field
      **/
-    private void reset(int x, int y) {
-        generateMines(x, y);
+    public void reset() {
+        field = null;
         lost = false;
+        this.actualMinesRemaining = mineHandler.getAmountMines();
+        this.minesRemaining = mineHandler.getAmountMines();
     }
 
-    public boolean gameState() {
-        //TODO
-        /* Do we really need this method ? */
-        return false;
-    }
-
+    /**
+     * Generates minefield if its null
+     *
+     * @param x coordinate from the first Click
+     * @param y coordinate from the first Click
+     */
     private void firstClick(int x, int y) {
         if (field == null) {
-            int counter = 0;
             generateMines(x, y);
-            for (int xI = 0; x < width; x++) {
-                for (int yI = 0; y < height; y++) {
-                    Cell cell = field.getCellFromField(xI, yI);
-                    if (cell.getType() == CellType.Mine) {
-                        counter++;
-                    }
-                }
-            }
-
-            System.out.println("Generated Mines: " + counter);
         }
+    }
+
+    public int getMinesRemaining() {
+        return minesRemaining;
     }
 
     /**
      * Called when the right mouse button gets pressed
-     *
+     * <p>
      * Marks or UnMarks a Cell, if the mine i actually a
      * Mine the minesRemaining counter gets increased for an
      * UnMark and decreased for a Mark
@@ -72,21 +94,25 @@ public class MineField {
      **/
     public void rightClick(int x, int y) {
 
-        System.out.println("RightClick");
-
-        firstClick(x, y);
-        Cell cellToMark = getFromField(x, y);
-        if (cellToMark.isMarked()) {
-            cellToMark.setMarked(false);
-            if (cellToMark.getType() == CellType.Mine) {
-                minesRemaining++;
-            }
-        } else {
-            cellToMark.setMarked(true);
-            if (cellToMark.getType() == CellType.Mine) {
-                minesRemaining--;
-                if (minesRemaining == 0) {
-                    win = true;
+        if (!lost) {
+            Cell cellToMark = getFromField(x, y);
+            if (!cellToMark.isChecked()) {
+                if (cellToMark.isMarked()) {
+                    cellToMark.setMarked(false);
+                    minesRemaining++;
+                    if (cellToMark.getType() == CellType.Mine) {
+                        actualMinesRemaining++;
+                    }
+                } else {
+                    cellToMark.setMarked(true);
+                    minesRemaining--;
+                    if (cellToMark.getType() == CellType.Mine) {
+                        actualMinesRemaining--;
+                        if (actualMinesRemaining == 0) {
+                            System.out.println("You Won");
+                            //TODO Run win Screen
+                        }
+                    }
                 }
             }
         }
@@ -95,15 +121,15 @@ public class MineField {
     /**
      * Gets the right Cell from the 2D Matrix,
      * because of the different mapping the x and y values are changed
-     *
+     * <p>
      * normal Coordinate system:
      * 1
-     *
+     * <p>
      * 0    1
-     *
+     * <p>
      * matrix Coordinate system:
      * 0    1
-     *
+     * <p>
      * 1
      *
      * @param x index for the field
@@ -111,7 +137,7 @@ public class MineField {
      * @return Cell from the field
      * @throws IndexOutOfBoundsException if the x or the y value is out of range
      **/
-    private Cell getFromField(int x, int y) {
+    public Cell getFromField(int x, int y) {
         if (x < 0 || y < 0 || y > height || x > width) {
             throw new IndexOutOfBoundsException("The Coordinates are outside the filed x: " + x + " y: " + y);
         }
@@ -120,7 +146,7 @@ public class MineField {
 
     /**
      * Called when the left mouse button gets pressed
-     *
+     * <p>
      * ends the game if the CellType is of type Mine
      * shows the neighbours if the CellType is of Empty
      * shows the Cell if the type if of Number
@@ -129,114 +155,112 @@ public class MineField {
      * @param y value of the mouse Coordinates
      **/
     public void leftClick(int x, int y) {
+        if (!lost) {
 
-        System.out.println("LeftClick");
+            firstClick(x, y);
+            Cell cellClicked = getFromField(x, y);
 
-        firstClick(x, y);
-        Cell cellClicked = getFromField(x, y);
-        switch (cellClicked.getType()) {
-            case Mine:
-                lost = true;
-                cellClicked.setChecked(true);
-                //TODO run some method to end the game
-                break;
-            case Empty:
-                showNeighbours(x, y);
-                //TODO update Visuals
-                break;
-            case Number:
-                cellClicked.setChecked(true);
-                //TODO update Visuals
-                break;
-            case DoesNotExist:
-                //TODO nothing happens here
-                break;
+            switch (cellClicked.getType()) {
+                case Mine:
+                    lost = true;
+                    cellClicked.setChecked(true);
+                    showRemainingMines();
+                    break;
+                case Empty:
+                    showNeighbours(x, y);
+                    break;
+                case Number:
+                    cellClicked.setChecked(true);
+                    break;
+                case DoesNotExist:
+                    break;
+            }
         }
     }
 
     /**
-     *  Helping Method for showNeighbours, opens all 8 neighbouring Cells.
+     * Helping Method for showNeighbours, opens all 8 neighbouring Cells.
+     *
      * @param x index x
      * @param y index y
      */
-    private void checkNeighbours(int x, int y){
-        for(int i = x - 1;i < x + 2; i++){
-            for(int j = y - 1;j < y + 2; j++){
-                try{
+    private void checkNeighbours(int x, int y) {
+        for (int i = x - 1; i < x + 2; i++) {
+            for (int j = y - 1; j < y + 2; j++) {
+                if (j >= 0 && i >= 0 && j < width && i < height) {
                     getFromField(i, j).setChecked(true);
-                    /**
-                      Using try-catch as a control structure in Java isn't good. Might change it later to instead have 5 seperate
-                      blocks for the edge cases (left, top, right, down or none of those). Readability would suffer.
-                      */
-                } catch(IndexOutOfBoundsException e) {}
+                }
+
+
             }
         }
     }
 
     /**
-     * Helping function for showNeigbours
+     * Helping function for showNeighbours
      *
      * @param startingPointChanging starting coordinate of line along the orientation of the line
      * @param startingPointConstant starting coordinate of line that stays constant
-     * @param dimensions height and width of the field. The first in the array will be the primary line, of which all
-     *                   perpendicular and intersecting lines will be opened. So if startingPointChanging is an x-coordinate,
-     *                   then the first entry in dimensions should be the width.
+     * @param dimensions            height and width of the field. The first in the array will be the primary line, of which all
+     *                              perpendicular and intersecting lines will be opened. So if startingPointChanging is an x-coordinate,
+     *                              then the first entry in dimensions should be the width.
      */
-    private void openLine(int startingPointChanging, int startingPointConstant, int[] dimensions){
-        for (int i = startingPointChanging; i < width && getFromField(i, startingPointConstant).getType() == CellType.Empty; i++){
-            /**
+    private void openLine(int startingPointChanging, int startingPointConstant, int[] dimensions) {
+        for (int i = startingPointChanging; i < width && getFromField(i, startingPointConstant).getType() == CellType.Empty; i++) {
+            /*
              * One for-loop for getting all Cells above, and one for all Cells below the horizontal line
              */
-            for(int j = startingPointConstant; j >= 0 && getFromField(i, j).getType() == CellType.Empty; j--){
+            for (int j = startingPointConstant; j >= 0 && getFromField(i, j).getType() == CellType.Empty; j--) {
                 checkNeighbours(i, j);
             }
-            for(int j = startingPointConstant; j < height && getFromField(i, j).getType() == CellType.Empty; j++){
+            for (int j = startingPointConstant; j < height && getFromField(i, j).getType() == CellType.Empty; j++) {
                 checkNeighbours(i, j);
             }
             checkNeighbours(i, startingPointConstant);
         }
     }
 
-    /** Called upon a click on an empty Cell(whose Coords are the argument of showNeighbours.) Will open all neighbouring empty cells and any adjacent number Cells.
-     * Not using a recursive function for perfomance reasons. Instead, the method will first find the leftmost nearest Cell containing a number,
+    /**
+     * Called upon a click on an empty Cell(whose Coords are the argument of showNeighbours.) Will open all neighbouring empty cells and any adjacent number Cells.
+     * Not using a recursive function for performance reasons. Instead, the method will first find the leftmost nearest Cell containing a number,
      * then go along the horizontal line of the selected Cell and open the neighbours for each empty Cell on each vertical line
      * that is perpendicular to and intersecting with the horizontal line. Same procedure is then repeated for the vertical line of the selected Cell.
      */
 
     public void showNeighbours(int x, int y) {
 
-        /** TODO: Testing once the other classes are finished.
+        /* TODO: Testing once the other classes are finished.
 
          * Working with horizontal line of the called Cell ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          */
-        /**
+        /*
          Finding the coordinate of the leftmost empty cell on the horizontal line
          */
         int horizontalLineX = 0;
         if (x > 0) {
-            for (int i = x; i > 0 && getFromField(i - 1, y).getType() == CellType.Empty; i--){
+            for (int i = x; i > 0 && getFromField(i - 1, y).getType() == CellType.Empty; i--) {
                 horizontalLineX = i - 1;
             }
-        }/**
+        }/*
          * Opening the neighbours for each Cell on each vertical, perpendicular line intersecting with the horizontal line of the original Cell
          */
 
-        openLine(horizontalLineX, y,new int[] {width, height});
-        /**
+        openLine(horizontalLineX, y, new int[]{width, height});
+        /*
          * Working with vertical line of the called Cell ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          */
-        /**
+        /*
          Finding the coordinate of the uppermost empty cell on the vertical line
          */
         int verticalLineY = 0;
         if (y > 0) {
-            for (int i = y; i > 0 && getFromField(x, i).getType() == CellType.Empty; i--){
+            for (int i = y; i > 0 && getFromField(x, i).getType() == CellType.Empty; i--) {
                 verticalLineY = i - 1;
             }
         }
-        /**
+        /*
          * Opening the neighbours for each Cell on each horizontal, perpendicular line intersecting with the vertical line of the original Cell
          */
-        openLine(verticalLineY, x,new int[] {height, width});
+        openLine(verticalLineY, x, new int[]{height, width});
     }
 }

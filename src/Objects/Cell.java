@@ -1,6 +1,6 @@
 package Objects;
 
-import Objects.Temp.Sprites;
+import Objects.assets.sprites.Sprites;
 
 import java.awt.image.BufferedImage;
 
@@ -57,7 +57,7 @@ public class Cell {
             case Mine:
                 return Sprites.SpriteMineTileBuffered;
             case DoesNotExist:
-                return Sprites.SpriteDefaultTile;
+                return null;
             case Number:
                 return Sprites.getSpriteNumberTile(neighbourMines);
             case Empty:

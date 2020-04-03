@@ -2,7 +2,7 @@ package UI;
 
 import Objects.MineField;
 import Objects.MineHandler;
-import Objects.Temp.Sprites;
+import Objects.assets.sprites.Sprites;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +13,9 @@ public class MainPanel {
 
     public static void main(String[] args) {
 
-        int width = 20;
-        int height = 20;
-        int amountMines = 10;
+        int width = 30;
+        int height = 30;
+        int amountMines = 99;
 
 
         Runnable r = () -> {
@@ -38,7 +38,7 @@ public class MainPanel {
             f.setLocationByPlatform(true);
 
             f.pack();
-            f.setMinimumSize(new Dimension(720, 1280));
+            f.setMinimumSize(new Dimension(1000, 1280));
             f.setVisible(true);
         };
         SwingUtilities.invokeLater(r);

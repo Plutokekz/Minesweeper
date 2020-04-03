@@ -1,4 +1,4 @@
-package Objects.Temp;
+package Objects.BaseObjects;
 
 public class Point {
 

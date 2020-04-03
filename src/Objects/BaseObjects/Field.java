@@ -1,11 +1,11 @@
-package Objects.Temp;
+package Objects.BaseObjects;
 
 import Objects.Cell;
 
 public class Field {
 
     private int width, height;
-    private Cell[][] field;
+    private final Cell[][] field;
 
     public Field(int width, int height) {
         this.width = width;
