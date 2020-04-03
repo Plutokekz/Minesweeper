@@ -34,7 +34,7 @@ public class MineHandler {
      * @param y value of the first mouse click coordinate
      * @return Completed minefield
      */
-    public Cell[][] generateMines(int x, int y) {
+    public Field generateMines(int x, int y) {
         double probabilityMine = (double) amountMines / ((double) width * (double) height);
 
         for (int h = 0; h < height; h++) {
@@ -42,13 +42,18 @@ public class MineHandler {
                 field.setCellInField(w, h, new Cell(CellType.Empty));
             }
         }
-
-        field.setCellInField(x, y, new Cell(CellType.NoMines));
-        for (Point neighbourPoints: Points.cellNeighbourPoints) {
+        /*
+         * Set the first clicked cell and its neighbors to empty spaces
+         *
+         * @param x value of the first mouse click coordinate
+         * @param y value of the first mouse click coordinate
+         */
+        field.setCellInField(x, y, new Cell(CellType.FirstClick));
+        for (Point neighbourPoints : Points.cellNeighbourPoints) {
             int calcX = x + neighbourPoints.getX();
             int calcY = y + neighbourPoints.getY();
             if (calcY >= 0 && calcX >= 0 && calcY < height && calcX < width) {
-                field.setCellInField(calcX, calcY, new Cell(CellType.NoMines));
+                field.setCellInField(calcX, calcY, new Cell(CellType.FirstClick));
             }
         }
 
@@ -89,26 +94,23 @@ public class MineHandler {
                 }
             }
         }
+        //When there are no numbers or mines in the cell
         for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++) {
-                if (field.getCellFromField(w, h).getType() == CellType.NoMines) {
+                if (field.getCellFromField(w, h).getType() == CellType.FirstClick) {
                     if (field.getCellFromField(w, h).getNeighbourMines() == 0) {
                         field.setCellInField(w, h, new Cell(CellType.Empty));
-                    }else{
+                    } else {
                         field.setCellInField(w, h, new Cell(CellType.Number, field.getCellFromField(w, h).getNeighbourMines()));
                     }
                 }
             }
         }
-        return field.getField();
+        return field;
     }
 
 
-    /**
-     * This method count how many mines are planted in the left(or in the top) 5 cells before the current cell.
-     * This is implemented so that too many mines are not on one side.
-     * A return of 5 means that mines were planted in a row.
-     */
+    //Check if there are 5 mines already lined up
     private int checkChainMine(int w, int h) {
         int countH = 0;
         int countV = 0;

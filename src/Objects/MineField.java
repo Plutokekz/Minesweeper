@@ -1,33 +1,39 @@
 package Objects;
 
+import Objects.Temp.Field;
+
 public class MineField {
 
-    private int firstX, firstY, minesRemaining, width, height;
+    private int minesRemaining, width, height;
     private boolean lost = false, win = false;
 
-    private Cell[][] field;
+    private Field field;
     private MineHandler mineHandler;
 
 
-    public MineField(int firstX, int firstY, MineHandler mineHandler) {
-        this.firstX = firstX;
-        this.firstY = firstY;
+    public MineField(MineHandler mineHandler, int height, int width) {
+        this.height = height;
+        this.width = width;
         this.mineHandler = mineHandler;
+    }
+
+    public Field getField() {
+        return field;
     }
 
     /**
      * Generates a new minefield
      **/
-    public void generateMines() {
-        field = mineHandler.generateMines(firstX, firstY);
+    public void generateMines(int x, int y) {
+        field = mineHandler.generateMines(x, y);
     }
 
     /**
      * Resets the game after a loos or something else
      * generates a new field
      **/
-    private void reset() {
-        generateMines();
+    private void reset(int x, int y) {
+        generateMines(x, y);
         lost = false;
     }
 
@@ -35,6 +41,23 @@ public class MineField {
         //TODO
         /* Do we really need this method ? */
         return false;
+    }
+
+    private void firstClick(int x, int y) {
+        if (field == null) {
+            int counter = 0;
+            generateMines(x, y);
+            for (int xI = 0; x < width; x++) {
+                for (int yI = 0; y < height; y++) {
+                    Cell cell = field.getCellFromField(xI, yI);
+                    if (cell.getType() == CellType.Mine) {
+                        counter++;
+                    }
+                }
+            }
+
+            System.out.println("Generated Mines: " + counter);
+        }
     }
 
     /**
@@ -48,6 +71,10 @@ public class MineField {
      * @param y value of the mouse Coordinates
      **/
     public void rightClick(int x, int y) {
+
+        System.out.println("RightClick");
+
+        firstClick(x, y);
         Cell cellToMark = getFromField(x, y);
         if (cellToMark.isMarked()) {
             cellToMark.setMarked(false);
@@ -88,7 +115,7 @@ public class MineField {
         if (x < 0 || y < 0 || y > height || x > width) {
             throw new IndexOutOfBoundsException("The Coordinates are outside the filed x: " + x + " y: " + y);
         }
-        return field[y][x];
+        return field.getCellFromField(x, y);
     }
 
     /**
@@ -102,6 +129,10 @@ public class MineField {
      * @param y value of the mouse Coordinates
      **/
     public void leftClick(int x, int y) {
+
+        System.out.println("LeftClick");
+
+        firstClick(x, y);
         Cell cellClicked = getFromField(x, y);
         switch (cellClicked.getType()) {
             case Mine:
@@ -110,7 +141,7 @@ public class MineField {
                 //TODO run some method to end the game
                 break;
             case Empty:
-                showNeighbours(x , y);
+                showNeighbours(x, y);
                 //TODO update Visuals
                 break;
             case Number:

@@ -1,9 +1,10 @@
 package Objects;
 
-public enum  CellType {
+public enum CellType {
     Mine,
     Number,
     Empty,
     DoesNotExist,
+    FirstClick,
     NoMines
 }

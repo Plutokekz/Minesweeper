@@ -1,5 +1,9 @@
 package Objects;
 
+import Objects.Temp.Sprites;
+
+import java.awt.image.BufferedImage;
+
 public class Cell {
     private CellType type;
     private boolean checked;
@@ -46,6 +50,21 @@ public class Cell {
 
     public void setNeighbourMines(int neighbourMines) {
         this.neighbourMines = neighbourMines;
+    }
+
+    public BufferedImage getSprite() {
+        switch (type) {
+            case Mine:
+                return Sprites.SpriteMineTileBuffered;
+            case DoesNotExist:
+                return Sprites.SpriteDefaultTile;
+            case Number:
+                return Sprites.getSpriteNumberTile(neighbourMines);
+            case Empty:
+                return Sprites.SpriteCellEmptyTile;
+            default:
+                return Sprites.SpriteDefaultTile;
+        }
     }
 
     @Override

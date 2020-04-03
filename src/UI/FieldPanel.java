@@ -1,34 +1,32 @@
 package UI;
 
-import javax.imageio.ImageIO;
+import Objects.Cell;
+import Objects.MineField;
+import Objects.Temp.Sprites;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class FieldPanel {
 
     private final JPanel gui = new JPanel(new BorderLayout(3, 3));
-    private int rows, columns, xClicked, yClicked;
-    private boolean clicked = false;
-    private BufferedImage SpriteMineTileBuffered, SpriteCellTileBuffered;
+    private int rows, columns;
+    private MineField mineField;
 
 
-    FieldPanel(int rows, int columns) throws IOException {
+    FieldPanel(int rows, int columns, MineField mineField) {
         this.columns = columns;
         this.rows = rows;
-        loadSprites();
+        this.mineField = mineField;
         initializeGui();
     }
 
 
-    private void loadSprites() throws IOException {
-        SpriteCellTileBuffered = ImageIO.read(this.getClass().getResource("/assets/tiles/SpriteBoxTileCell.png"));
-        SpriteMineTileBuffered = ImageIO.read(this.getClass().getResource("/assets/tiles/SpriteMineTile.png"));
-    }
+
 
 
     public final void initializeGui() {
@@ -51,14 +49,25 @@ public class FieldPanel {
                         height = (super.getHeight()) / columns;
                         width = (super.getWidth()) / rows;
 
-                        BufferedImage currentImage;
+                        BufferedImage currentImageCellTop, currentImageCellBottom, currentImageCellMid = null;
 
-                        if (clicked && x == xClicked && y == yClicked) {
-                            currentImage = FieldPanel.this.resize(SpriteMineTileBuffered, width, height);
-                        } else {
-                            currentImage = FieldPanel.this.resize(SpriteCellTileBuffered, width, height);
+                        currentImageCellBottom = Sprites.SpriteCellEmptyTile;
+
+                        currentImageCellTop = Sprites.SpriteCellTileBuffered;
+
+                        if (mineField.getField() != null) {
+                            Cell currentCell = mineField.getField().getCellFromField(x, y);
+                            if (currentCell.isChecked()) {
+                                currentImageCellMid = currentCell.getSprite();
+                            }
                         }
-                        g2d.drawImage(currentImage, startX, startY, null);
+
+                        g2d.drawImage(FieldPanel.this.resize(currentImageCellBottom, width, height), startX, startY, null);
+                        if (currentImageCellMid != null) {
+                            g2d.drawImage(FieldPanel.this.resize(currentImageCellMid, width, height), startX, startY, null);
+                        } else {
+                            g2d.drawImage(FieldPanel.this.resize(currentImageCellTop, width, height), startX, startY, null);
+                        }
 
                         startY += height;
                     }
@@ -121,9 +130,13 @@ public class FieldPanel {
                 int y = e.getY() / (panelMineField.getHeight() / columns);
                 int x = e.getX() / (panelMineField.getWidth() / rows);
 
-                clicked = true;
-                xClicked = x;
-                yClicked = y;
+
+                if (e.getButton() == 1) {
+                    mineField.leftClick(x, y);
+                } else if (e.getButton() == 3) {
+                    mineField.rightClick(x, y);
+                }
+
 
                 panelMineField.repaint();
 
