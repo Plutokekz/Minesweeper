@@ -2,6 +2,8 @@ package Objects;
 
 import Objects.BaseObjects.Field;
 
+import java.util.LinkedList;
+
 public class MineField {
 
     private final int width, height;
@@ -179,10 +181,10 @@ public class MineField {
     }
 
     /**
-     * Helping Method for showNeighbours, opens all 8 neighbouring Cells.
+     * Helping Method for showNeighbours, checks all 8 neighbouring Cells.
      *
-     * @param x index x
-     * @param y index y
+     * @param x x coordinate of cell whose neighbours are to be opened
+     * @param y y coordinate of cell whose neighbours are to be opened
      */
     private void checkNeighbours(int x, int y) {
         for (int i = x - 1; i < x + 2; i++) {
@@ -190,77 +192,51 @@ public class MineField {
                 if (j >= 0 && i >= 0 && j < width && i < height) {
                     getFromField(i, j).setChecked(true);
                 }
-
-
             }
         }
     }
-
     /**
-     * Helping function for showNeighbours
+     * Helping Method for showNeighbours, returns a list containing the coordinates of empty, unchecked Cells neighbouring
+     * the one given as the argument.
      *
-     * @param startingPointChanging starting coordinate of line along the orientation of the line
-     * @param startingPointConstant starting coordinate of line that stays constant
-     * @param dimensions            height and width of the field. The first in the array will be the primary line, of which all
-     *                              perpendicular and intersecting lines will be opened. So if startingPointChanging is an x-coordinate,
-     *                              then the first entry in dimensions should be the width.
+     * @param x x coordinate of cell whose neighbours are to be opened
+     * @param y y coordinate of cell whose neighbours are to be opened
      */
-    private void openLine(int startingPointChanging, int startingPointConstant, int[] dimensions) {
-        for (int i = startingPointChanging; i < width && getFromField(i, startingPointConstant).getType() == CellType.Empty; i++) {
-            /*
-             * One for-loop for getting all Cells above, and one for all Cells below the horizontal line
-             */
-            for (int j = startingPointConstant; j >= 0 && getFromField(i, j).getType() == CellType.Empty; j--) {
-                checkNeighbours(i, j);
+
+    private LinkedList<Integer> emptyUncheckedNeighbours(int x, int y){
+        LinkedList<Integer> returnList = new LinkedList<Integer>();
+        for (int i = x - 1; i < x + 2; i++) {
+            for (int j = y - 1; j < y + 2; j++) {
+                if (j >= 0 && i >= 0 && j < width && i < height && getFromField(i, j).getType() == CellType.Empty && !getFromField(i, j).isChecked()) {
+                    returnList.addFirst(j);
+                    returnList.addFirst(i);
+                }
             }
-            for (int j = startingPointConstant; j < height && getFromField(i, j).getType() == CellType.Empty; j++) {
-                checkNeighbours(i, j);
-            }
-            checkNeighbours(i, startingPointConstant);
         }
+        return returnList;
     }
 
     /**
-     * Called upon a click on an empty Cell(whose Coords are the argument of showNeighbours.) Will open all neighbouring empty cells and any adjacent number Cells.
-     * Not using a recursive function for performance reasons. Instead, the method will first find the leftmost nearest Cell containing a number,
-     * then go along the horizontal line of the selected Cell and open the neighbours for each empty Cell on each vertical line
-     * that is perpendicular to and intersecting with the horizontal line. Same procedure is then repeated for the vertical line of the selected Cell.
+     * Called upon when an empty cell is clicked. A directly recursive method using the leftClick function leads
+     * to stackoverflows, so instead this method creates a list of all empty, unchecked cells that are directly
+     * connected to the clicked empty cell through empty cells. Then the neighbours of this list all get checked.
      */
 
-    public void showNeighbours(int x, int y) {
+    private void showNeighbours(int x, int y) {
 
-        /* TODO: Testing once the other classes are finished.
+        LinkedList<Integer> emptyCellsWithUncheckedNeighbours = new LinkedList<Integer>();
+        emptyCellsWithUncheckedNeighbours.addFirst(y);
+        emptyCellsWithUncheckedNeighbours.addFirst(x);
 
-         * Working with horizontal line of the called Cell ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         */
-        /*
-         Finding the coordinate of the leftmost empty cell on the horizontal line
-         */
-        int horizontalLineX = 0;
-        if (x > 0) {
-            for (int i = x; i > 0 && getFromField(i - 1, y).getType() == CellType.Empty; i--) {
-                horizontalLineX = i - 1;
-            }
-        }/*
-         * Opening the neighbours for each Cell on each vertical, perpendicular line intersecting with the horizontal line of the original Cell
-         */
-
-        openLine(horizontalLineX, y, new int[]{width, height});
-        /*
-         * Working with vertical line of the called Cell ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         */
-        /*
-         Finding the coordinate of the uppermost empty cell on the vertical line
-         */
-        int verticalLineY = 0;
-        if (y > 0) {
-            for (int i = y; i > 0 && getFromField(x, i).getType() == CellType.Empty; i--) {
-                verticalLineY = i - 1;
+        while (emptyCellsWithUncheckedNeighbours.size()>0){
+            LinkedList<Integer> firstCellEmptyNeighbours = emptyUncheckedNeighbours(emptyCellsWithUncheckedNeighbours.get(0), emptyCellsWithUncheckedNeighbours.get(1));
+            checkNeighbours(emptyCellsWithUncheckedNeighbours.get(0), emptyCellsWithUncheckedNeighbours.get(1));
+            emptyCellsWithUncheckedNeighbours.remove();
+            emptyCellsWithUncheckedNeighbours.remove();
+            if (firstCellEmptyNeighbours.size() > 0) {
+                emptyCellsWithUncheckedNeighbours.addAll(firstCellEmptyNeighbours);
             }
         }
-        /*
-         * Opening the neighbours for each Cell on each horizontal, perpendicular line intersecting with the vertical line of the original Cell
-         */
-        openLine(verticalLineY, x, new int[]{height, width});
     }
 }
+
