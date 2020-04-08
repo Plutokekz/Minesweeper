@@ -189,7 +189,7 @@ public class MineField {
     private void checkNeighbours(int x, int y) {
         for (int i = x - 1; i < x + 2; i++) {
             for (int j = y - 1; j < y + 2; j++) {
-                if (j >= 0 && i >= 0 && j < width && i < height) {
+                if (j >= 0 && i >= 0 && i < width && j < height) {
                     getFromField(i, j).setChecked(true);
                 }
             }
@@ -207,7 +207,7 @@ public class MineField {
         LinkedList<Integer> returnList = new LinkedList<Integer>();
         for (int i = x - 1; i < x + 2; i++) {
             for (int j = y - 1; j < y + 2; j++) {
-                if (j >= 0 && i >= 0 && j < width && i < height && getFromField(i, j).getType() == CellType.Empty && !getFromField(i, j).isChecked()) {
+                if (j >= 0 && i >= 0 && i < width && j < height && getFromField(i, j).getType() == CellType.Empty && !getFromField(i, j).isChecked()) {
                     returnList.addFirst(j);
                     returnList.addFirst(i);
                 }
