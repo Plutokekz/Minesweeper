@@ -2,7 +2,7 @@ package UI;
 
 import Objects.Cell;
 import Objects.MineField;
-import Objects.assets.sprites.Sprites;
+import Objects.assets.TileHandler;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -60,15 +60,15 @@ public class FieldPanel {
 
 
                         BufferedImage currentImageCellTop, currentImageCellBottom, currentImageCellMid = null, currentImageFlag = null;
-                        currentImageCellBottom = Sprites.SpriteCellEmptyTile;
-                        currentImageCellTop = Sprites.SpriteCellTileBuffered;
+                        currentImageCellBottom = TileHandler.SPRITE_BOTTOM;
+                        currentImageCellTop = TileHandler.SPRITE_TOP;
 
                         if (mineField.getField() != null) {
                             Cell currentCell = mineField.getFromField(x, y);
                             if (currentCell.isChecked()) {
                                 currentImageCellMid = currentCell.getSprite();
                             } else if (currentCell.isMarked()) {
-                                currentImageFlag = Sprites.SpriteFlagTile;
+                                currentImageFlag = TileHandler.SPRITE_FLAG;
                             }
                         }
 

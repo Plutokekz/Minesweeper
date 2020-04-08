@@ -1,6 +1,6 @@
 package Objects;
 
-import Objects.assets.sprites.Sprites;
+import Objects.assets.TileHandler;
 
 import java.awt.image.BufferedImage;
 
@@ -55,15 +55,15 @@ public class Cell {
     public BufferedImage getSprite() {
         switch (type) {
             case Mine:
-                return Sprites.SpriteMineTileBuffered;
+                return TileHandler.SPRITE_MINE;
             case DoesNotExist:
                 return null;
             case Number:
-                return Sprites.getSpriteNumberTile(neighbourMines);
+                return TileHandler.getSpriteNumberTile(neighbourMines);
             case Empty:
-                return Sprites.SpriteCellEmptyTile;
+                return TileHandler.SPRITE_BOTTOM;
             default:
-                return Sprites.SpriteDefaultTile;
+                return TileHandler.SPRITE_DEFAULT;
         }
     }
 
