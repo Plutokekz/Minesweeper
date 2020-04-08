@@ -12,32 +12,7 @@ public class MainPanel {
 
 
     public static void main(String[] args) {
-        int width = 0, height = 0, amountMines = 0;
-        int key = 0;
-        if (args.length > 0) {
-            key = Integer.parseInt(args[0]);
-        }
-        switch (key) {
-            case 1:
-                width = 16;
-                height = 16;
-                amountMines = 40;
-                break;
-            case 2:
-                width = 30;
-                height = 16;
-                amountMines = 99;
-                break;
-            default:
-                width = 9;
-                height = 9;
-                amountMines = 10;
-        }
-
-
-        int finalWidth = width;
-        int finalHeight = height;
-        int finalAmountMines = amountMines;
+        int width = 9, height = 9, amountMines = 10;
         Runnable r = () -> {
 
             try {
@@ -46,23 +21,26 @@ public class MainPanel {
                 e.printStackTrace();
             }
 
-            MineHandler mineHandler = new MineHandler(finalWidth, finalHeight, finalAmountMines);
-            MineField mineField = new MineField(mineHandler, finalHeight, finalWidth);
+            MineHandler mineHandler = new MineHandler(width, height, amountMines);
+            MineField mineField = new MineField(mineHandler, height, width);
 
 
-            FieldPanel cg = new FieldPanel(finalWidth, finalHeight, mineField);
+            FieldPanel cg = new FieldPanel(width, height, mineField);
 
             JFrame f = new JFrame("MineSweeper");
             f.add(cg.getGui());
             f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             f.setLocationByPlatform(true);
             JMenuBar menu = new JMenuBar();
-            menu.add(new JMenu("Options"));
-            f.setJMenuBar(menu);
-
+            JMenu options = new JMenu("Options");
+            JMenuItem size = new JMenuItem("size");
+            options.add(size);
+            menu.add(options);
+            f.setJMenuBar(MenuBar.createMenuBar(mineHandler, mineField, cg));
 
             f.pack();
-            f.setMinimumSize(new Dimension(1000, 1280));
+            f.setMinimumSize(new Dimension(1000, 720));
+            f.setLocationRelativeTo(null);
             f.setVisible(true);
         };
         SwingUtilities.invokeLater(r);

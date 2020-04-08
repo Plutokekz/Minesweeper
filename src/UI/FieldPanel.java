@@ -13,9 +13,9 @@ import java.awt.image.BufferedImage;
 
 public class FieldPanel {
 
-
     private final JPanel gui = new JPanel(new BorderLayout(3, 3));
-    private final int rows, columns;
+    private JPanel panelMineField;
+    private int rows, columns;
     private final MineField mineField;
     private JLabel remainingMinesLabel;
     private JLabel clock;
@@ -39,7 +39,7 @@ public class FieldPanel {
 
 
         // the smaller of the two sizes
-        JPanel panelMineField = new JPanel(new CardLayout(10, 10)) {
+        panelMineField = new JPanel(new CardLayout(10, 10)) {
 
             //Drawing Magic
             private void doDrawing(Graphics g) {
@@ -101,9 +101,8 @@ public class FieldPanel {
                 int s;
                 if (super.getWidth() == 0 || super.getHeight() == 0) {
                     s = 32;
-                } else {
-                    s = Math.min((super.getWidth()) / FieldPanel.this.rows, (super.getHeight()) / FieldPanel.this.columns);
-                }
+                } else
+                    s = Math.max(Math.min((super.getWidth()) / FieldPanel.this.rows, (super.getHeight()) / FieldPanel.this.columns), 32);
                 int rows = s * FieldPanel.this.rows;
                 int columns = s * FieldPanel.this.columns;
                 return new Dimension(rows, columns);
@@ -128,15 +127,7 @@ public class FieldPanel {
 
         // Action Listeners
 
-        resetButton.addActionListener(e -> {
-            //reset the field
-            mineField.reset();
-            //update the mine label
-            updateMinesLabel(mineField.getMinesRemaining());
-            //redraw everything
-            panelMineField.revalidate();
-            panelMineField.repaint();
-        });
+        resetButton.addActionListener(e -> rest());
 
         panelMineField.addMouseListener(new MouseAdapter() {
             @Override
@@ -187,6 +178,17 @@ public class FieldPanel {
         });
     }
 
+    public void rest() {
+        //reset the field
+        mineField.reset();
+        //update the mine label
+        updateMinesLabel(mineField.getMinesRemaining());
+        //redraw everything
+        panelMineField.revalidate();
+        panelMineField.repaint();
+
+    }
+
     private void updateMinesLabel(int mines) {
         remainingMinesLabel.setText("Mines: " + mines);
     }
@@ -216,5 +218,13 @@ public class FieldPanel {
 
     public final JComponent getGui() {
         return gui;
+    }
+
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+
+    public void setColumns(int columns) {
+        this.columns = columns;
     }
 }

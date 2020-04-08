@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 public class MineField {
 
-    private final int width, height;
+    private int width, height;
     private final MineHandler mineHandler;
     private boolean lost = false, win = false;
 
@@ -204,7 +204,7 @@ public class MineField {
      */
 
     private LinkedList<Integer> emptyUncheckedNeighbours(int x, int y){
-        LinkedList<Integer> returnList = new LinkedList<Integer>();
+        LinkedList<Integer> returnList = new LinkedList<>();
         for (int i = x - 1; i < x + 2; i++) {
             for (int j = y - 1; j < y + 2; j++) {
                 if (j >= 0 && i >= 0 && i < width && j < height && getFromField(i, j).getType() == CellType.Empty && !getFromField(i, j).isChecked()) {
@@ -224,11 +224,11 @@ public class MineField {
 
     private void showNeighbours(int x, int y) {
 
-        LinkedList<Integer> emptyCellsWithUncheckedNeighbours = new LinkedList<Integer>();
+        LinkedList<Integer> emptyCellsWithUncheckedNeighbours = new LinkedList<>();
         emptyCellsWithUncheckedNeighbours.addFirst(y);
         emptyCellsWithUncheckedNeighbours.addFirst(x);
 
-        while (emptyCellsWithUncheckedNeighbours.size()>0){
+        while (emptyCellsWithUncheckedNeighbours.size() > 0) {
             LinkedList<Integer> firstCellEmptyNeighbours = emptyUncheckedNeighbours(emptyCellsWithUncheckedNeighbours.get(0), emptyCellsWithUncheckedNeighbours.get(1));
             checkNeighbours(emptyCellsWithUncheckedNeighbours.get(0), emptyCellsWithUncheckedNeighbours.get(1));
             emptyCellsWithUncheckedNeighbours.remove();
@@ -237,6 +237,14 @@ public class MineField {
                 emptyCellsWithUncheckedNeighbours.addAll(firstCellEmptyNeighbours);
             }
         }
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 }
 

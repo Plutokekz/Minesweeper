@@ -7,7 +7,7 @@ import Objects.BaseObjects.Points;
 
 public class MineHandler {
 
-    private final int width, height, amountMines;
+    private int width, height, amountMines;
 
     public MineHandler(int width, int height, int amountMines) /*throws MineLimitsException*/ {
         this.width = width;
@@ -136,5 +136,17 @@ public class MineHandler {
 
     public int getAmountMines() {
         return amountMines;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setAmountMines(int amountMines) {
+        this.amountMines = amountMines;
     }
 }
