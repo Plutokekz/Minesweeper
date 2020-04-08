@@ -94,7 +94,7 @@ public class MineField {
      * @param x value of the mouse Coordinates
      * @param y value of the mouse Coordinates
      **/
-    public void rightClick(int x, int y) {
+    public GameState rightClick(int x, int y) {
 
         if (!lost) {
             Cell cellToMark = getFromField(x, y);
@@ -112,12 +112,15 @@ public class MineField {
                         actualMinesRemaining--;
                         if (actualMinesRemaining == 0) {
                             System.out.println("You Won");
+                            return GameState.Win;
                             //TODO Run win Screen
                         }
                     }
                 }
             }
         }
+
+        return GameState.Default;
     }
 
     /**
@@ -156,7 +159,7 @@ public class MineField {
      * @param x value of the mouse Coordinates
      * @param y value of the mouse Coordinates
      **/
-    public void leftClick(int x, int y) {
+    public GameState leftClick(int x, int y) {
         if (!lost) {
 
             firstClick(x, y);
@@ -167,7 +170,7 @@ public class MineField {
                     lost = true;
                     cellClicked.setChecked(true);
                     showRemainingMines();
-                    break;
+                    return GameState.Lose;
                 case Empty:
                     showNeighbours(x, y);
                     break;
@@ -178,6 +181,7 @@ public class MineField {
                     break;
             }
         }
+        return GameState.Default;
     }
 
     /**

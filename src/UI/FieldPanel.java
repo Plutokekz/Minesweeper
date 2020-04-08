@@ -1,6 +1,7 @@
 package UI;
 
 import Objects.Cell;
+import Objects.GameState;
 import Objects.MineField;
 import Objects.assets.TileHandler;
 
@@ -133,6 +134,8 @@ public class FieldPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
 
+                GameState state = GameState.Default;
+
 
                 //Calculate the max Cell Tile Size => mint of (height of the JPanel times the Columns of the FieldPanel and width of the JPanel times Rows id the FieldPanel)
                 int s = Math.min((panelMineField.getHeight()) / FieldPanel.this.columns, (panelMineField.getWidth()) / FieldPanel.this.rows);
@@ -154,7 +157,7 @@ public class FieldPanel {
 
                 // Left Click
                 if (e.getButton() == 1) {
-                    mineField.leftClick(x, y);
+                    state = mineField.leftClick(x, y);
                     // Start Clock
                 }
                 // Debug Show entire Field by clicking the Mousewheel
@@ -163,7 +166,7 @@ public class FieldPanel {
                 }
                 // Right Click
                 else if (e.getButton() == 3) {
-                    mineField.rightClick(x, y);
+                    state = mineField.rightClick(x, y);
                     // update minesRemaining
                     updateMinesLabel(mineField.getMinesRemaining());
                 }
@@ -171,6 +174,24 @@ public class FieldPanel {
                 // Update The drawn Image
                 panelMineField.revalidate();
                 panelMineField.repaint();
+
+
+                //Handel GameState
+                switch (state) {
+                    case Lose:
+                        JOptionPane.showConfirmDialog(null, new JLabel("You Lost !\n    :("), "You Lost !", JOptionPane.DEFAULT_OPTION);
+                        break;
+
+                    case Win:
+                        JTextField name = new JTextField();
+                        final JComponent[] inputs = new JComponent[]{
+                                new JLabel("Your Score: "),
+                                new JLabel("Enter your name: "),
+                                name
+                        };
+                        JOptionPane.showConfirmDialog(null, inputs, "You Won !", JOptionPane.DEFAULT_OPTION);
+                        break;
+                }
 
                 // Debug
                 System.out.println("Clicked Cell: (x: " + x + " y: " + y + ")");
