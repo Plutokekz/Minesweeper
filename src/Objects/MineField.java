@@ -74,10 +74,12 @@ public class MineField {
      * @param x coordinate from the first Click
      * @param y coordinate from the first Click
      */
-    private void firstClick(int x, int y) {
+    private GameState firstClick(int x, int y) {
         if (field == null) {
             generateMines(x, y);
+            return GameState.FistClick;
         }
+        return GameState.Default;
     }
 
     public int getMinesRemaining() {
@@ -160,9 +162,10 @@ public class MineField {
      * @param y value of the mouse Coordinates
      **/
     public GameState leftClick(int x, int y) {
+        GameState state = GameState.Default;
         if (!lost) {
 
-            firstClick(x, y);
+            state = firstClick(x, y);
             Cell cellClicked = getFromField(x, y);
 
             switch (cellClicked.getType()) {
@@ -181,7 +184,7 @@ public class MineField {
                     break;
             }
         }
-        return GameState.Default;
+        return state;
     }
 
     /**

@@ -158,7 +158,9 @@ public class FieldPanel {
                 // Left Click
                 if (e.getButton() == 1) {
                     state = mineField.leftClick(x, y);
-                    // Start Clock
+                    if (state == GameState.FistClick) {
+                        //Start Clock
+                    }
                 }
                 // Debug Show entire Field by clicking the Mousewheel
                 else if (e.getButton() == 2) {

@@ -3,5 +3,6 @@ package Objects;
 public enum GameState {
     Default,
     Win,
-    Lose
+    Lose,
+    FistClick
 }
