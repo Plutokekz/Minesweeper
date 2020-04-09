@@ -6,20 +6,27 @@ import java.util.LinkedList;
 
 public class MineField {
 
-    private int width, height;
-    private final MineHandler mineHandler;
-    private boolean lost = false, win = false;
+    private int rows, columns;
+    private boolean lost = false;
 
     private Field field;
-    private int actualMinesRemaining, minesRemaining;
+    private int actualMinesRemaining, minesRemaining, amountMines;
 
 
-    public MineField(MineHandler mineHandler, int height, int width) {
-        this.height = height;
-        this.width = width;
-        this.mineHandler = mineHandler;
-        this.actualMinesRemaining = mineHandler.getAmountMines();
-        this.minesRemaining = mineHandler.getAmountMines();
+    public MineField(int columns, int rows, int amountMines) {
+        this.columns = columns;
+        this.rows = rows;
+        this.actualMinesRemaining = amountMines;
+        this.minesRemaining = amountMines;
+        this.amountMines = amountMines;
+    }
+
+    public MineField(Difficulty difficulty) {
+        this.columns = difficulty.getHeight();
+        this.rows = difficulty.getWidth();
+        this.actualMinesRemaining = difficulty.getAmountMines();
+        this.minesRemaining = difficulty.getAmountMines();
+        this.amountMines = difficulty.getAmountMines();
     }
 
     public Field getField() {
@@ -29,8 +36,8 @@ public class MineField {
 
     // Debugging
     public void showField() {
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
+        for (int y = 0; y < columns; y++) {
+            for (int x = 0; x < rows; x++) {
                 field.getCellFromField(x, y).setChecked(true);
             }
         }
@@ -40,8 +47,8 @@ public class MineField {
      * Marks all all the Mines as Clicked so they are shown
      */
     public void showRemainingMines() {
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
+        for (int y = 0; y < columns; y++) {
+            for (int x = 0; x < rows; x++) {
                 Cell cell = field.getCellFromField(x, y);
                 if (cell.getType() == CellType.Mine) {
                     cell.setChecked(true);
@@ -54,7 +61,7 @@ public class MineField {
      * Generates a new minefield
      **/
     public void generateMines(int x, int y) {
-        field = mineHandler.generateMines(x, y);
+        field = MineHandler.generateMines(x, y, rows, columns, amountMines);
     }
 
     /**
@@ -64,8 +71,8 @@ public class MineField {
     public void reset() {
         field = null;
         lost = false;
-        this.actualMinesRemaining = mineHandler.getAmountMines();
-        this.minesRemaining = mineHandler.getAmountMines();
+        this.actualMinesRemaining = amountMines;
+        this.minesRemaining = amountMines;
     }
 
     /**
@@ -145,7 +152,7 @@ public class MineField {
      * @throws IndexOutOfBoundsException if the x or the y value is out of range
      **/
     public Cell getFromField(int x, int y) {
-        if (x < 0 || y < 0 || y > height || x > width) {
+        if (x < 0 || y < 0 || y > columns || x > rows) {
             throw new IndexOutOfBoundsException("The Coordinates are outside the filed x: " + x + " y: " + y);
         }
         return field.getCellFromField(x, y);
@@ -196,12 +203,13 @@ public class MineField {
     private void checkNeighbours(int x, int y) {
         for (int i = x - 1; i < x + 2; i++) {
             for (int j = y - 1; j < y + 2; j++) {
-                if (j >= 0 && i >= 0 && i < width && j < height) {
+                if (j >= 0 && i >= 0 && i < rows && j < columns) {
                     getFromField(i, j).setChecked(true);
                 }
             }
         }
     }
+
     /**
      * Helping Method for showNeighbours, returns a list containing the coordinates of empty, unchecked Cells neighbouring
      * the one given as the argument.
@@ -210,11 +218,11 @@ public class MineField {
      * @param y y coordinate of cell whose neighbours are to be opened
      */
 
-    private LinkedList<Integer> emptyUncheckedNeighbours(int x, int y){
+    private LinkedList<Integer> emptyUncheckedNeighbours(int x, int y) {
         LinkedList<Integer> returnList = new LinkedList<>();
         for (int i = x - 1; i < x + 2; i++) {
             for (int j = y - 1; j < y + 2; j++) {
-                if (j >= 0 && i >= 0 && i < width && j < height && getFromField(i, j).getType() == CellType.Empty && !getFromField(i, j).isChecked()) {
+                if (j >= 0 && i >= 0 && i < rows && j < columns && getFromField(i, j).getType() == CellType.Empty && !getFromField(i, j).isChecked()) {
                     returnList.addFirst(j);
                     returnList.addFirst(i);
                 }
@@ -246,12 +254,19 @@ public class MineField {
         }
     }
 
-    public void setWidth(int width) {
-        this.width = width;
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.columns = difficulty.getHeight();
+        this.rows = difficulty.getWidth();
+        this.amountMines = difficulty.getAmountMines();
     }
 
-    public void setHeight(int height) {
-        this.height = height;
+    public int getRows() {
+        return rows;
+    }
+
+    public int getColumns() {
+        return columns;
     }
 }
 

@@ -1,13 +1,13 @@
 package UI;
 
-import Objects.MineField;
-import Objects.MineHandler;
+import Objects.Difficulties;
+import Objects.Difficulty;
 
 import javax.swing.*;
 
 public class MenuBar {
 
-    public static JMenuBar createMenuBar(MineHandler mineHandler, MineField mineField, FieldPanel fieldPanel) {
+    public static JMenuBar createMenuBar(FieldPanel fieldPanel) {
 
         JMenuBar menuBar = new JMenuBar();
 
@@ -16,11 +16,11 @@ public class MenuBar {
         //Difficultly
         JMenu difficulty = new JMenu("Difficulty");
         JMenuItem easy = new JMenuItem("Easy");
-        easy.addActionListener(e -> setSize(mineHandler, mineField, fieldPanel, 9, 9, 10));
+        easy.addActionListener(e -> setSize(fieldPanel, Difficulties.easy));
         JMenuItem normal = new JMenuItem("Normal");
-        normal.addActionListener(e -> setSize(mineHandler, mineField, fieldPanel, 16, 16, 40));
+        normal.addActionListener(e -> setSize(fieldPanel, Difficulties.normal));
         JMenuItem hard = new JMenuItem("Hard");
-        hard.addActionListener(e -> setSize(mineHandler, mineField, fieldPanel, 30, 16, 99));
+        hard.addActionListener(e -> setSize(fieldPanel, Difficulties.hard));
         JMenuItem custom = new JMenuItem("Custom");
         custom.addActionListener(e -> {
             JTextField widthText = new JTextField();
@@ -40,7 +40,7 @@ public class MenuBar {
                 int height = Integer.parseInt(heightText.getText());
                 int amountMines = Integer.parseInt(amountMinesText.getText());
                 if (width >= 8 && height >= 8 && width * height >= amountMines + 10 && width <= 30 && height <= 24 && amountMines >= 10 && amountMines <= 667) {
-                    setSize(mineHandler, mineField, fieldPanel, width, height, amountMines);
+                    setSize(fieldPanel, new Difficulty(width, height, amountMines));
 
                     //Debug
                     System.out.println("New Field with Height: " + height + ", Width: " + width + " and Mines: " + amountMines);
@@ -80,14 +80,8 @@ public class MenuBar {
         return menuBar;
     }
 
-    private static void setSize(MineHandler mineHandler, MineField mineField, FieldPanel fieldPanel, int width, int height, int amountMines) {
-        mineHandler.setHeight(height);
-        mineHandler.setWidth(width);
-        mineHandler.setAmountMines(amountMines);
-        mineField.setHeight(height);
-        mineField.setWidth(width);
-        fieldPanel.setColumns(height);
-        fieldPanel.setRows(width);
+    private static void setSize(FieldPanel fieldPanel, Difficulty difficulty) {
+        fieldPanel.getMineField().setDifficulty(difficulty);
         fieldPanel.rest();
     }
 

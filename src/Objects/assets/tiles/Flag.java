@@ -3,7 +3,7 @@ package Objects.assets.tiles;
 
 public class Flag {
 
-    public static String SpriteFlagDefaultPath = "/assets/tiles/flag/SpriteFlagTile.png";
+    public static final String SpriteFlagDefaultPath = "/assets/tiles/flag/SpriteFlagTile.png";
 
 
 }

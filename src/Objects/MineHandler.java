@@ -7,18 +7,6 @@ import Objects.BaseObjects.Points;
 
 public class MineHandler {
 
-    private int width, height, amountMines;
-
-    public MineHandler(int width, int height, int amountMines) /*throws MineLimitsException*/ {
-        this.width = width;
-        this.height = height;
-        this.amountMines = amountMines;
-        /* When the user can set the map size and the number of mines. (update)
-        if (amountMines >= width * height) {
-            throw new MineLimitsException("The number of mines should be smaller than the size of the map");
-        }*/
-    }
-
     /**
      * This method enters mines and numbers in the fields.
      * To prevent 'NullPointerException' due to missing CellType, first set the type of all cells to 'Empty'.
@@ -32,12 +20,12 @@ public class MineHandler {
      * @param y value of the first mouse click coordinate
      * @return Completed minefield
      */
-    public Field generateMines(int x, int y) {
-        Field field = new Field(width, height);
-        double probabilityMine = (double) amountMines / ((double) width * (double) height);
+    public static Field generateMines(int x, int y, int rows, int columns, int amountMines) {
+        Field field = new Field(rows, columns);
+        double probabilityMine = (double) amountMines / ((double) rows * (double) columns);
 
-        for (int h = 0; h < height; h++) {
-            for (int w = 0; w < width; w++) {
+        for (int h = 0; h < columns; h++) {
+            for (int w = 0; w < rows; w++) {
                 field.setCellInField(w, h, new Cell(CellType.Empty));
             }
         }
@@ -51,15 +39,15 @@ public class MineHandler {
         for (Point neighbourPoints : Points.cellNeighbourPoints) {
             int calcX = x + neighbourPoints.getX();
             int calcY = y + neighbourPoints.getY();
-            if (calcY >= 0 && calcX >= 0 && calcY < height && calcX < width) {
+            if (calcY >= 0 && calcX >= 0 && calcY < columns && calcX < rows) {
                 field.setCellInField(calcX, calcY, new Cell(CellType.NoMines));
             }
         }
         int minesRemaining = amountMines;
         while (minesRemaining > 0) {
 
-            for (int h = 0; h < height; h++) {
-                for (int w = 0; w < width; w++) {
+            for (int h = 0; h < columns; h++) {
+                for (int w = 0; w < rows; w++) {
 
                     if (field.getCellFromField(w, h).getType() != CellType.NoMines) {
 
@@ -72,7 +60,7 @@ public class MineHandler {
                             for (Point neighbourPoints : Points.cellNeighbourPoints) {
                                 int nextW = w + neighbourPoints.getX();
                                 int nextH = h + neighbourPoints.getY();
-                                if (nextW >= 0 && nextH >= 0 && nextW < width && nextH < height) {
+                                if (nextW >= 0 && nextH >= 0 && nextW < rows && nextH < columns) {
                                     switch (field.getCellFromField(nextW, nextH).getType()) {
                                         case Mine:
                                             break;
@@ -94,8 +82,8 @@ public class MineHandler {
 
         }
         //When there are no numbers or mines in the cell
-        for (int h = 0; h < height; h++) {
-            for (int w = 0; w < width; w++) {
+        for (int h = 0; h < columns; h++) {
+            for (int w = 0; w < rows; w++) {
                 if (field.getCellFromField(w, h).getType() == CellType.NoMines) {
                     if (field.getCellFromField(w, h).getNeighbourMines() == 0) {
                         field.setCellInField(w, h, new Cell(CellType.Empty));
@@ -114,39 +102,23 @@ public class MineHandler {
      * This is implemented so that too many mines are not on one side.
      * A return of 5 means that mines were planted in a row.
      */
-    private int checkChainMine(int w, int h, Field field) {
+    private int checkChainMine(int w, int h, Field field, int rows, int columns) {
         int countH = 0;
         int countV = 0;
         for (int i = w - 5; i < w; i++) {
-            if (i >= 0 && i < width) {
+            if (i >= 0 && i < rows) {
                 if (field.getCellFromField(i, h).getType() == CellType.Mine) {
                     countH++;
                 }
             }
         }
         for (int j = h - 5; j < h; j++) {
-            if (j >= 0 && j < height) {
+            if (j >= 0 && j < columns) {
                 if (field.getCellFromField(w, j).getType() == CellType.Mine) {
                     countV++;
                 }
             }
         }
         return Math.max(countH, countV);
-    }
-
-    public int getAmountMines() {
-        return amountMines;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public void setAmountMines(int amountMines) {
-        this.amountMines = amountMines;
     }
 }

@@ -4,7 +4,7 @@ package Objects.assets.tiles;
 public class Top {
 
 
-    public static String SpriteCellTopDefaultPath = "/assets/tiles/top/SpriteCellTop.png";
+    public static final String SpriteCellTopDefaultPath = "/assets/tiles/top/SpriteCellTop.png";
     public static String SpriteCellTopGreenMazePath = "/assets/tiles/top/SpriteCellTopGreenMaze.png";
     public static String SpriteCellTopBlueIronPath = "/assets/tiles/top/SpriteCellTopBlueIron.png";
     public static String SpriteCellTopDefaultBoringPath = "/assets/tiles/top/SpriteCellTopDefaultBoring.png";

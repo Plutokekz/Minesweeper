@@ -27,7 +27,7 @@ public class TileHandler {
     public static BufferedImage SPRITE_NUMBER_6 = null;
     public static BufferedImage SPRITE_NUMBER_7 = null;
     public static BufferedImage SPRITE_NUMBER_8 = null;
-    private static TileLoader tileLoader = new TileLoader();
+    private static final TileLoader tileLoader = new TileLoader();
 
     public static void loadDefaultSprites() throws IOException {
 
