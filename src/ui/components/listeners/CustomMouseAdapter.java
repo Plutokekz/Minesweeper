@@ -42,6 +42,11 @@ public class CustomMouseAdapter extends MouseAdapter {
                 System.out.println("First Click: " + state);
                 panelTopUI.setRemainingMines(panelMineField.getMineField().getMinesRemaining());
                 //Start Clock
+                panelTopUI.counter.start();
+                //SwingUtilities.invokeLater(counter);
+                Thread counterThread = new Thread(panelTopUI.counter);
+                counterThread.setDaemon(true);
+                counterThread.start();
             }
         }
         // Debug Show entire Field by clicking the Mousewheel
@@ -63,13 +68,15 @@ public class CustomMouseAdapter extends MouseAdapter {
         //Handel GameState
         switch (state) {
             case Lose:
-                JOptionPane.showConfirmDialog(null, new JLabel("You Lost !\n    :("), "You Lost !", JOptionPane.DEFAULT_OPTION);
+                panelTopUI.counter.stop();
+                JOptionPane.showConfirmDialog(null, new JLabel("Time played: " + panelTopUI.getTimeCounterText()), "You Lost !", JOptionPane.DEFAULT_OPTION);
                 break;
 
             case Win:
+                panelTopUI.counter.stop();
                 JTextField name = new JTextField();
                 final JComponent[] inputs = new JComponent[]{
-                        new JLabel("Your Score: "),
+                        new JLabel("Your Time: " + panelTopUI.getTimeCounterText()),
                         new JLabel("Enter your name: "),
                         name
                 };

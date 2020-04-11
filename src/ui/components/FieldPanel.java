@@ -17,23 +17,11 @@ public class FieldPanel {
     private PanelMineField panelMineField;
     private PanelTopUI panelTopUI;
 
-    /**
-     *
-     **/
-    FieldPanel(int columns, int rows, int amountMines) {
-        this.mineField = new MineField(columns, rows, amountMines);
-        initializeGui();
-    }
-
     private final MineField mineField;
 
     public FieldPanel() {
         this.mineField = new MineField(Difficulties.easy);
         initializeGui();
-    }
-
-    public MineField getMineField() {
-        return mineField;
     }
 
     public final void initializeGui() {
@@ -52,29 +40,31 @@ public class FieldPanel {
         gui.add(panelTopUI, BorderLayout.PAGE_START);
 
         //Add Action Listener to Reset Button
-        panelTopUI.getResetButton().addActionListener(e -> rest());
+        panelTopUI.getResetButton().addActionListener(e -> reset());
         //Add Mouse Adapter to panelMineField
         panelMineField.addMouseListener(new CustomMouseAdapter(panelMineField, panelTopUI));
     }
 
-    public void rest() {
+    public void reset() {
         //reset the field
+        panelTopUI.counter.stop();
         mineField.reset();
-        //update the mine label
-        panelTopUI.setRemainingMines(mineField.getMinesRemaining());
         //redraw everything
         panelMineField.revalidate();
         panelMineField.repaint();
+        //Rest TopPanel after Thread as stopped
+        panelTopUI.reset();
 
     }
 
     public void setDifficulty(Difficulty difficulty) {
         panelMineField.setDifficulty(difficulty);
-        rest();
+        reset();
     }
 
     public final JComponent getGui() {
         return gui;
     }
+
 
 }

@@ -137,4 +137,5 @@ public class PanelMineField extends JPanel {
     public void setDifficulty(Difficulty difficulty) {
         mineField.setDifficulty(difficulty);
     }
+
 }

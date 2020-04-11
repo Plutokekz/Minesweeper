@@ -1,15 +1,48 @@
 package ui.components;
 
-public class Counter {
-    private int value;
+import ui.components.panel.PanelTopUI;
 
-    public void increment(){
-        //TODO
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Counter implements Runnable {
+    private final PanelTopUI panelTopUI;
+    private final ReentrantLock counterLock = new ReentrantLock(true); // enable fairness policy
+    private int counter = 0;
+    private volatile boolean done = false;
+
+    public Counter(PanelTopUI panelTopUI) {
+        this.panelTopUI = panelTopUI;
     }
-    public void decrease(){
-        //TODO
+
+    private void incrementCounter() throws InterruptedException {
+        counterLock.lock();
+        try {
+            counter++;
+            panelTopUI.setTime(counter);
+        } finally {
+            counterLock.unlock();
+        }
+        Thread.sleep(1000);
     }
-    public void reset(int value){
-        //TODO
+
+    @Override
+    public void run() {
+        while (!done) {
+            try {
+                incrementCounter();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
+    public void stop() {
+        done = true;
+    }
+
+    public void start() {
+        counter = 0;
+        done = false;
+    }
+
 }

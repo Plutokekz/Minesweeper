@@ -5,7 +5,7 @@ import objects.assets.TileHandler;
 import java.awt.image.BufferedImage;
 
 public class Cell {
-    private CellType type;
+    private final CellType type;
     private boolean checked;
     private boolean isMarked = false;
     private int neighbourMines;
@@ -22,10 +22,6 @@ public class Cell {
 
     public CellType getType() {
         return type;
-    }
-
-    public void setType(CellType type) {
-        this.type = type;
     }
 
     public boolean isChecked() {
@@ -46,10 +42,6 @@ public class Cell {
 
     public int getNeighbourMines() {
         return neighbourMines;
-    }
-
-    public void setNeighbourMines(int neighbourMines) {
-        this.neighbourMines = neighbourMines;
     }
 
     public BufferedImage getSprite() {

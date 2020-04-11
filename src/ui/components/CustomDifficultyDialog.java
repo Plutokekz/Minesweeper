@@ -18,7 +18,7 @@ public class CustomDifficultyDialog extends JPanel {
 
     private final JLabel widthLabel = new JLabel("width:");
     private final JLabel heightLabel = new JLabel("height:");
-    private final JLabel amountMinesLabel = new JLabel("amount of mines:");
+    private final JLabel amountMinesLabel = new JLabel("mines:");
 
     public CustomDifficultyDialog() {
         super(new GridLayout(3, 3));

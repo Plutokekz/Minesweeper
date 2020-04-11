@@ -4,6 +4,6 @@ import java.awt.*;
 
 public class Fonts {
 
-    public static final Font FontDefault = new Font("MS Sans Serif", Font.PLAIN, 16);
+    public final static Font FontDefault = new Font("MS Sans Serif", Font.PLAIN, 12); // Comic Sans MS
 
 }

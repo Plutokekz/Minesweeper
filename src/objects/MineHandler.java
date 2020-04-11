@@ -97,28 +97,30 @@ public class MineHandler {
     }
 
 
-    /**
-     * This method count how many mines are planted in the left(or in the top) 5 cells before the current cell.
-     * This is implemented so that too many mines are not on one side.
-     * A return of 5 means that mines were planted in a row.
-     */
-    private int checkChainMine(int w, int h, Field field, int rows, int columns) {
-        int countH = 0;
-        int countV = 0;
-        for (int i = w - 5; i < w; i++) {
-            if (i >= 0 && i < rows) {
-                if (field.getCellFromField(i, h).getType() == CellType.Mine) {
-                    countH++;
-                }
-            }
-        }
-        for (int j = h - 5; j < h; j++) {
-            if (j >= 0 && j < columns) {
-                if (field.getCellFromField(w, j).getType() == CellType.Mine) {
-                    countV++;
-                }
-            }
-        }
-        return Math.max(countH, countV);
-    }
+// --Commented out by Inspection START (11.04.2020 19:35):
+//    /**
+//     * This method count how many mines are planted in the left(or in the top) 5 cells before the current cell.
+//     * This is implemented so that too many mines are not on one side.
+//     * A return of 5 means that mines were planted in a row.
+//     */
+//    private int checkChainMine(int w, int h, Field field, int rows, int columns) {
+//        int countH = 0;
+//        int countV = 0;
+//        for (int i = w - 5; i < w; i++) {
+//            if (i >= 0 && i < rows) {
+//                if (field.getCellFromField(i, h).getType() == CellType.Mine) {
+//                    countH++;
+//                }
+//            }
+//        }
+//        for (int j = h - 5; j < h; j++) {
+//            if (j >= 0 && j < columns) {
+//                if (field.getCellFromField(w, j).getType() == CellType.Mine) {
+//                    countV++;
+//                }
+//            }
+//        }
+//        return Math.max(countH, countV);
+//    }
+// --Commented out by Inspection STOP (11.04.2020 19:35)
 }

@@ -1,5 +1,6 @@
 package ui;
 
+import objects.Fonts;
 import objects.assets.TileHandler;
 import ui.components.FieldPanel;
 import ui.components.MenuBar;
@@ -21,11 +22,10 @@ public class MainPanel {
                 System.exit(-1);
             }
 
-
             FieldPanel cg = new FieldPanel();
 
             JFrame f = new JFrame("");
-            f.setFont(new Font("MS Sans Serif", Font.ITALIC, 52));
+            f.setFont(Fonts.FontDefault);
             f.setTitle("Minesweeper");
             f.add(cg.getGui());
             f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
