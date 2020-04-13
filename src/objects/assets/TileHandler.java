@@ -10,6 +10,10 @@ import java.util.HashMap;
 
 public class TileHandler {
 
+    /**
+     * Stores the static data Image data for the game
+     */
+
     private static final HashMap<Integer, BufferedImage> SpriteNumberTiles = new HashMap<>();
     public static BufferedImage SPRITE_TOP = null;
     public static BufferedImage SPRITE_BOTTOM = null;

@@ -1,18 +1,20 @@
-package ui.components.panel;
+package ui.components.panels;
 
-import objects.Fonts;
-import ui.components.Counter;
+import objects.data.Fonts;
+import ui.components.runnables.Counter;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PanelTopUI extends JPanel {
+public class InformationPanel extends JPanel {
+
+    //TODO Add java docs
 
     private JButton resetButton;
     private JLabel timeCounter, minesRemainingCounter;
     public final Counter counter;
 
-    public PanelTopUI() {
+    public InformationPanel() {
         super(new FlowLayout(FlowLayout.CENTER, 100, 0)); //TODO make the TopPanel size change dynamically
         this.counter = new Counter(this);
         setupUI();

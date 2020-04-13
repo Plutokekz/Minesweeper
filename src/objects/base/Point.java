@@ -27,8 +27,19 @@ public class Point {
         this.y = y;
     }
 
-    public boolean equals(Point other) {
-        return this.x == other.x && this.y == other.y;
+    /**
+     * compares the x and y value of the points
+     *
+     * @param other Point
+     * @return boolean
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Point) {
+            Point point = (Point) other;
+            return this.x == point.x && this.y == point.y;
+        }
+        return false;
     }
 
     @Override

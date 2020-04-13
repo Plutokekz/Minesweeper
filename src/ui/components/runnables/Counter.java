@@ -1,24 +1,30 @@
-package ui.components;
+package ui.components.runnables;
 
-import ui.components.panel.PanelTopUI;
+import ui.components.panels.InformationPanel;
 
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Counter implements Runnable {
-    private final PanelTopUI panelTopUI;
-    private final ReentrantLock counterLock = new ReentrantLock(true); // enable fairness policy
+    private final InformationPanel informationPanel;
+    private final ReentrantLock counterLock = new ReentrantLock(true);
     private int counter = 0;
     private volatile boolean done = false;
 
-    public Counter(PanelTopUI panelTopUI) {
-        this.panelTopUI = panelTopUI;
+    public Counter(InformationPanel informationPanel) {
+        this.informationPanel = informationPanel;
     }
 
+    /**
+     * Updates the timeCounter int the informationPanel every second
+     *
+     * @throws InterruptedException because the Thread has to sleep 1000 millis
+     * @see InformationPanel
+     */
     private void incrementCounter() throws InterruptedException {
         counterLock.lock();
         try {
             counter++;
-            panelTopUI.setTime(counter);
+            informationPanel.setTime(counter);
         } finally {
             counterLock.unlock();
         }
@@ -36,10 +42,16 @@ public class Counter implements Runnable {
         }
     }
 
+    /**
+     * Stops the Thread
+     */
     public void stop() {
         done = true;
     }
 
+    /**
+     * Starts the Thread
+     */
     public void start() {
         counter = 0;
         done = false;

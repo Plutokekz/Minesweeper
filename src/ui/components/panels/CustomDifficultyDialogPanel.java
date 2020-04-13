@@ -1,26 +1,24 @@
-package ui.components;
+package ui.components.panels;
 
-import objects.Difficulties;
 import objects.Difficulty;
-import objects.Fonts;
+import objects.data.Difficulties;
+import objects.data.Fonts;
+import ui.components.textfield.JNumberTextField;
 
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
-import java.text.NumberFormat;
 
-public class CustomDifficultyDialog extends JPanel {
+public class CustomDifficultyDialogPanel extends JPanel {
 
-    //TODO NumberFormatter is not the right thing for only allowing number in the textfield
-    private final JFormattedTextField widthText = new JFormattedTextField(new NumberFormatter(NumberFormat.getInstance()));
-    private final JFormattedTextField heightText = new JFormattedTextField(new NumberFormatter(NumberFormat.getInstance()));
-    private final JFormattedTextField amountMinesText = new JFormattedTextField(new NumberFormatter(NumberFormat.getInstance()));
+    private final JNumberTextField widthText = new JNumberTextField();
+    private final JNumberTextField heightText = new JNumberTextField();
+    private final JNumberTextField amountMinesText = new JNumberTextField();
 
     private final JLabel widthLabel = new JLabel("width:");
     private final JLabel heightLabel = new JLabel("height:");
     private final JLabel amountMinesLabel = new JLabel("mines:");
 
-    public CustomDifficultyDialog() {
+    public CustomDifficultyDialogPanel() {
         super(new GridLayout(3, 3));
         setupGui();
     }
@@ -44,16 +42,18 @@ public class CustomDifficultyDialog extends JPanel {
         this.add(amountMinesText);
     }
 
+    /**
+     * Returns a Difficulty from the DialogPanel if the inputs are not valid it returns an easy difficulty
+     *
+     * @see Difficulties
+     */
     public Difficulty getDifficulty() {
         if (!widthText.getText().isEmpty() && !heightText.getText().isEmpty() && !amountMinesText.getText().isEmpty()) {
-            int width = 9, height = 9, amountMines = 10;
-            try {
-                width = Integer.parseInt(widthText.getText());
-                height = Integer.parseInt(heightText.getText());
-                amountMines = Integer.parseInt(amountMinesText.getText());
-            } catch (NumberFormatException e) {
-                System.out.println("There was a problem with your numbers");
-            }
+            int width, height, amountMines;
+
+            width = widthText.getNumber();
+            height = heightText.getNumber();
+            amountMines = amountMinesText.getNumber();
 
             if (width >= 8 && height >= 8 && width * height >= amountMines + 10 && width <= 30 && height <= 24 && amountMines >= 10 && amountMines <= 667) {
                 return new Difficulty(width, height, amountMines);

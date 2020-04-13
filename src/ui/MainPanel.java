@@ -1,9 +1,9 @@
 package ui;
 
-import objects.Fonts;
 import objects.assets.TileHandler;
-import ui.components.FieldPanel;
-import ui.components.MenuBar;
+import objects.data.Fonts;
+import ui.components.FieldUI;
+import ui.components.menubar.MenuBar;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,29 +12,19 @@ import java.io.IOException;
 public class MainPanel {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        TileHandler.loadDefaultSprites();
+
         Runnable r = () -> {
-
-            try {
-                TileHandler.loadDefaultSprites();
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.exit(-1);
-            }
-
-            FieldPanel cg = new FieldPanel();
-
-            JFrame f = new JFrame("");
+            FieldUI fieldUI = new FieldUI();
+            JFrame f = new JFrame("Minesweeper");
             f.setFont(Fonts.FontDefault);
-            f.setTitle("Minesweeper");
-            f.add(cg.getGui());
+            f.add(fieldUI.getGui());
             f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             f.setLocationByPlatform(true);
             f.setIconImage(TileHandler.SPRITE_MINE);
-
             //Add Menu Bar
-            f.setJMenuBar(new MenuBar(cg));
-
+            f.setJMenuBar(new MenuBar(fieldUI));
             f.pack();
             f.setMinimumSize(new Dimension(1000, 720));
             f.setLocationRelativeTo(null);

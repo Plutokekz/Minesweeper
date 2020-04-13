@@ -4,6 +4,7 @@ package objects;
 import objects.base.Field;
 import objects.base.Point;
 import objects.base.Points;
+import objects.type.CellType;
 
 public class MineHandler {
 
@@ -26,7 +27,7 @@ public class MineHandler {
 
         for (int h = 0; h < columns; h++) {
             for (int w = 0; w < rows; w++) {
-                field.setCellInField(w, h, new Cell(CellType.Empty));
+                field.setCellInField(w, h, new Cell(CellType.Empty, w, h));
             }
         }
         /*
@@ -35,12 +36,12 @@ public class MineHandler {
          * @param x value of the first mouse click coordinate
          * @param y value of the first mouse click coordinate
          */
-        field.setCellInField(x, y, new Cell(CellType.NoMines));
+        field.setCellInField(x, y, new Cell(CellType.NoMines, x, y));
         for (Point neighbourPoints : Points.cellNeighbourPoints) {
             int calcX = x + neighbourPoints.getX();
             int calcY = y + neighbourPoints.getY();
             if (calcY >= 0 && calcX >= 0 && calcY < columns && calcX < rows) {
-                field.setCellInField(calcX, calcY, new Cell(CellType.NoMines));
+                field.setCellInField(calcX, calcY, new Cell(CellType.NoMines, calcX, calcY));
             }
         }
         int minesRemaining = amountMines;
@@ -55,7 +56,7 @@ public class MineHandler {
                             field.setCellInField(w, h, new Cell(CellType.NoMines, field.getCellFromField(w, h).getNeighbourMines()));
                         } else { }*/
                         if (minesRemaining > 0 && Math.random() < probabilityMine && field.getCellFromField(w, h).getType() != CellType.Mine) {
-                            field.setCellInField(w, h, new Cell(CellType.Mine));
+                            field.setCellInField(w, h, new Cell(CellType.Mine, w, h));
 
                             for (Point neighbourPoints : Points.cellNeighbourPoints) {
                                 int nextW = w + neighbourPoints.getX();
@@ -65,10 +66,10 @@ public class MineHandler {
                                         case Mine:
                                             break;
                                         case NoMines:
-                                            field.setCellInField(nextW, nextH, new Cell(CellType.NoMines, field.getCellFromField(nextW, nextH).getNeighbourMines() + 1));
+                                            field.setCellInField(nextW, nextH, new Cell(CellType.NoMines, field.getCellFromField(nextW, nextH).getNeighbourMines() + 1, nextW, nextH));
                                             break;
                                         default:
-                                            field.setCellInField(nextW, nextH, new Cell(CellType.Number, field.getCellFromField(nextW, nextH).getNeighbourMines() + 1));
+                                            field.setCellInField(nextW, nextH, new Cell(CellType.Number, field.getCellFromField(nextW, nextH).getNeighbourMines() + 1, nextW, nextH));
                                             break;
                                     }
                                 }
@@ -86,9 +87,9 @@ public class MineHandler {
             for (int w = 0; w < rows; w++) {
                 if (field.getCellFromField(w, h).getType() == CellType.NoMines) {
                     if (field.getCellFromField(w, h).getNeighbourMines() == 0) {
-                        field.setCellInField(w, h, new Cell(CellType.Empty));
+                        field.setCellInField(w, h, new Cell(CellType.Empty, w, h));
                     } else {
-                        field.setCellInField(w, h, new Cell(CellType.Number, field.getCellFromField(w, h).getNeighbourMines()));
+                        field.setCellInField(w, h, new Cell(CellType.Number, field.getCellFromField(w, h).getNeighbourMines(), w, h));
                     }
                 }
             }

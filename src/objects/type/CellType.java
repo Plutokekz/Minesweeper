@@ -1,4 +1,4 @@
-package objects;
+package objects.type;
 
 public enum CellType {
     Mine,

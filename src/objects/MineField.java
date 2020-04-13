@@ -1,7 +1,10 @@
 package objects;
 
 import objects.base.Field;
+import objects.type.CellType;
+import objects.type.GameState;
 
+import java.awt.*;
 import java.util.LinkedList;
 
 public class MineField {
@@ -13,14 +16,12 @@ public class MineField {
     private int actualMinesRemaining, minesRemaining, amountMines;
 
 
-    public MineField(int columns, int rows, int amountMines) {
-        this.columns = columns;
-        this.rows = rows;
-        this.actualMinesRemaining = amountMines;
-        this.minesRemaining = amountMines;
-        this.amountMines = amountMines;
-    }
-
+    /**
+     * Minefield
+     *
+     * @param difficulty in which the Field gets instantiated, can later be changed
+     *                   run generateMines() to create the minefield.
+     */
     public MineField(Difficulty difficulty) {
         this.columns = difficulty.getHeight();
         this.rows = difficulty.getWidth();
@@ -29,51 +30,46 @@ public class MineField {
         this.amountMines = difficulty.getAmountMines();
     }
 
-    public Field getField() {
-        return field;
-    }
 
-
+    //show
     // Debugging
     public void showField() {
         for (int y = 0; y < columns; y++) {
             for (int x = 0; x < rows; x++) {
-                field.getCellFromField(x, y).setChecked(true);
+                field.getCellFromField(x, y).setChecked();
             }
         }
     }
 
     /**
-     * Marks all all the Mines as Clicked so they are shown
+     * Marks all the Mines as Clicked so they are shown in the next draw call
      */
     public void showRemainingMines() {
         for (int y = 0; y < columns; y++) {
             for (int x = 0; x < rows; x++) {
                 Cell cell = field.getCellFromField(x, y);
                 if (cell.getType() == CellType.Mine) {
-                    cell.setChecked(true);
+                    cell.setChecked();
                 }
             }
         }
     }
 
+
+    //generate
+
     /**
      * Generates a new minefield
+     *
+     * @param x coordinate of the first Click
+     * @param y coordinate of the first Click
      **/
     public void generateMines(int x, int y) {
         field = MineHandler.generateMines(x, y, rows, columns, amountMines);
     }
 
-    /**
-     * Resets the game after a loos or something else
-     * generates a new field
-     **/
-    public void reset() {
-        field = null;
-        lost = false;
-        this.actualMinesRemaining = amountMines;
-        this.minesRemaining = amountMines;
-    }
+
+    //clicks
 
     /**
      * Generates minefield if its null
@@ -89,8 +85,40 @@ public class MineField {
         return GameState.Default;
     }
 
-    public int getMinesRemaining() {
-        return minesRemaining;
+    /**
+     * Called when the left mouse button gets pressed
+     * <p>
+     * ends the game if the CellType is of type Mine
+     * shows the neighbours if the CellType is of Empty
+     * shows the Cell if the type if of Number
+     *
+     * @param x value of the mouse Coordinates
+     * @param y value of the mouse Coordinates
+     **/
+    private GameState leftClick(int x, int y) {
+        GameState state = GameState.Default;
+        if (!lost) {
+
+            state = firstClick(x, y);
+            Cell cellClicked = getFromField(x, y);
+
+            switch (cellClicked.getType()) {
+                case Mine:
+                    lost = true;
+                    cellClicked.setChecked();
+                    showRemainingMines();
+                    return GameState.Lose;
+                case Empty:
+                    showNeighbours(x, y);
+                    break;
+                case Number:
+                    cellClicked.setChecked();
+                    break;
+                case DoesNotExist:
+                    break;
+            }
+        }
+        return state;
     }
 
     /**
@@ -103,7 +131,7 @@ public class MineField {
      * @param x value of the mouse Coordinates
      * @param y value of the mouse Coordinates
      **/
-    public GameState rightClick(int x, int y) {
+    private GameState rightClick(int x, int y) {
 
         if (!lost) {
             Cell cellToMark = getFromField(x, y);
@@ -122,7 +150,6 @@ public class MineField {
                         if (actualMinesRemaining == 0) {
                             System.out.println("You Won");
                             return GameState.Win;
-                            //TODO Run win Screen
                         }
                     }
                 }
@@ -131,6 +158,115 @@ public class MineField {
 
         return GameState.Default;
     }
+
+    //showNeighbours
+
+    /**
+     * Helping Method for showNeighbours, checks all 8 neighbouring Cells.
+     *
+     * @param x x coordinate of cell whose neighbours are to be opened
+     * @param y y coordinate of cell whose neighbours are to be opened
+     */
+    private void checkNeighbours(int x, int y) {
+        for (int i = x - 1; i < x + 2; i++) {
+            for (int j = y - 1; j < y + 2; j++) {
+                if (j >= 0 && i >= 0 && i < rows && j < columns) {
+                    getFromField(i, j).setChecked();
+                }
+            }
+        }
+    }
+
+    /**
+     * Helping Method for showNeighbours, returns a list containing the coordinates of empty, unchecked Cells neighbouring
+     * the one given as the argument.
+     *
+     * @param x x coordinate of cell whose neighbours are to be opened
+     * @param y y coordinate of cell whose neighbours are to be opened
+     */
+    private LinkedList<Integer> emptyUncheckedNeighbours(int x, int y) {
+        LinkedList<Integer> returnList = new LinkedList<>();
+        for (int i = x - 1; i < x + 2; i++) {
+            for (int j = y - 1; j < y + 2; j++) {
+                if (j >= 0 && i >= 0 && i < rows && j < columns && getFromField(i, j).getType() == CellType.Empty && !getFromField(i, j).isChecked()) {
+                    returnList.addFirst(j);
+                    returnList.addFirst(i);
+                }
+            }
+        }
+        return returnList;
+    }
+
+    /**
+     * Called upon when an empty cell is clicked. A directly recursive method using the leftClick function leads
+     * to stackoverflows, so instead this method creates a list of all empty, unchecked cells that are directly
+     * connected to the clicked empty cell through empty cells. Then the neighbours of this list all get checked.
+     */
+    private void showNeighbours(int x, int y) {
+
+        LinkedList<Integer> emptyCellsWithUncheckedNeighbours = new LinkedList<>();
+        emptyCellsWithUncheckedNeighbours.addFirst(y);
+        emptyCellsWithUncheckedNeighbours.addFirst(x);
+
+        while (emptyCellsWithUncheckedNeighbours.size() > 0) {
+            LinkedList<Integer> firstCellEmptyNeighbours = emptyUncheckedNeighbours(emptyCellsWithUncheckedNeighbours.get(0), emptyCellsWithUncheckedNeighbours.get(1));
+            checkNeighbours(emptyCellsWithUncheckedNeighbours.get(0), emptyCellsWithUncheckedNeighbours.get(1));
+            emptyCellsWithUncheckedNeighbours.remove();
+            emptyCellsWithUncheckedNeighbours.remove();
+            if (firstCellEmptyNeighbours.size() > 0) {
+                emptyCellsWithUncheckedNeighbours.addAll(firstCellEmptyNeighbours);
+            }
+        }
+    }
+
+    //Update
+
+    /**
+     * sets the Size (width and height) and the mines of the field over the Difficulty
+     *
+     * @param difficulty should be a new difficulty
+     *                   Run generateMines after setting a new difficulty to get a field with the new size
+     */
+    private void setDifficulty(Difficulty difficulty) {
+        this.columns = difficulty.getHeight();
+        this.rows = difficulty.getWidth();
+        this.amountMines = difficulty.getAmountMines();
+    }
+
+    /**
+     * Resets the game after a loos or something else
+     * generates a new field
+     **/
+    private void reset() {
+        field = null;
+        lost = false;
+        this.actualMinesRemaining = amountMines;
+        this.minesRemaining = amountMines;
+    }
+
+    public GameState update(GameAction gameAction) {
+        switch (gameAction.getType()) {
+            case LeftMouseButton:
+                return leftClick(gameAction.getX(), gameAction.getY());
+            case RightMouseButton:
+                return rightClick(gameAction.getX(), gameAction.getY());
+            case Reset:
+                reset();
+                return GameState.Reset;
+            case UpdateDifficulty:
+                if (!gameAction.getDifficulty().equals(new Difficulty(rows, columns, amountMines))) {
+                    setDifficulty(gameAction.getDifficulty());
+                }
+                reset();
+                return GameState.FieldUpdated;
+            default:
+                System.out.println("Unknown GameAction: " + gameAction.toString());
+                return GameState.Default;
+        }
+    }
+
+
+    //getter
 
     /**
      * Gets the right Cell from the 2D Matrix,
@@ -158,115 +294,16 @@ public class MineField {
         return field.getCellFromField(x, y);
     }
 
-    /**
-     * Called when the left mouse button gets pressed
-     * <p>
-     * ends the game if the CellType is of type Mine
-     * shows the neighbours if the CellType is of Empty
-     * shows the Cell if the type if of Number
-     *
-     * @param x value of the mouse Coordinates
-     * @param y value of the mouse Coordinates
-     **/
-    public GameState leftClick(int x, int y) {
-        GameState state = GameState.Default;
-        if (!lost) {
-
-            state = firstClick(x, y);
-            Cell cellClicked = getFromField(x, y);
-
-            switch (cellClicked.getType()) {
-                case Mine:
-                    lost = true;
-                    cellClicked.setChecked(true);
-                    showRemainingMines();
-                    return GameState.Lose;
-                case Empty:
-                    showNeighbours(x, y);
-                    break;
-                case Number:
-                    cellClicked.setChecked(true);
-                    break;
-                case DoesNotExist:
-                    break;
-            }
-        }
-        return state;
+    public MineFieldState getMineFieldState() {
+        return new MineFieldState(rows, columns, minesRemaining);
     }
 
-    /**
-     * Helping Method for showNeighbours, checks all 8 neighbouring Cells.
-     *
-     * @param x x coordinate of cell whose neighbours are to be opened
-     * @param y y coordinate of cell whose neighbours are to be opened
-     */
-    private void checkNeighbours(int x, int y) {
-        for (int i = x - 1; i < x + 2; i++) {
-            for (int j = y - 1; j < y + 2; j++) {
-                if (j >= 0 && i >= 0 && i < rows && j < columns) {
-                    getFromField(i, j).setChecked(true);
-                }
-            }
-        }
+    public boolean isEmpty() {
+        return field == null;
     }
 
-    /**
-     * Helping Method for showNeighbours, returns a list containing the coordinates of empty, unchecked Cells neighbouring
-     * the one given as the argument.
-     *
-     * @param x x coordinate of cell whose neighbours are to be opened
-     * @param y y coordinate of cell whose neighbours are to be opened
-     */
-
-    private LinkedList<Integer> emptyUncheckedNeighbours(int x, int y) {
-        LinkedList<Integer> returnList = new LinkedList<>();
-        for (int i = x - 1; i < x + 2; i++) {
-            for (int j = y - 1; j < y + 2; j++) {
-                if (j >= 0 && i >= 0 && i < rows && j < columns && getFromField(i, j).getType() == CellType.Empty && !getFromField(i, j).isChecked()) {
-                    returnList.addFirst(j);
-                    returnList.addFirst(i);
-                }
-            }
-        }
-        return returnList;
-    }
-
-    /**
-     * Called upon when an empty cell is clicked. A directly recursive method using the leftClick function leads
-     * to stackoverflows, so instead this method creates a list of all empty, unchecked cells that are directly
-     * connected to the clicked empty cell through empty cells. Then the neighbours of this list all get checked.
-     */
-
-    private void showNeighbours(int x, int y) {
-
-        LinkedList<Integer> emptyCellsWithUncheckedNeighbours = new LinkedList<>();
-        emptyCellsWithUncheckedNeighbours.addFirst(y);
-        emptyCellsWithUncheckedNeighbours.addFirst(x);
-
-        while (emptyCellsWithUncheckedNeighbours.size() > 0) {
-            LinkedList<Integer> firstCellEmptyNeighbours = emptyUncheckedNeighbours(emptyCellsWithUncheckedNeighbours.get(0), emptyCellsWithUncheckedNeighbours.get(1));
-            checkNeighbours(emptyCellsWithUncheckedNeighbours.get(0), emptyCellsWithUncheckedNeighbours.get(1));
-            emptyCellsWithUncheckedNeighbours.remove();
-            emptyCellsWithUncheckedNeighbours.remove();
-            if (firstCellEmptyNeighbours.size() > 0) {
-                emptyCellsWithUncheckedNeighbours.addAll(firstCellEmptyNeighbours);
-            }
-        }
-    }
-
-
-    public void setDifficulty(Difficulty difficulty) {
-        this.columns = difficulty.getHeight();
-        this.rows = difficulty.getWidth();
-        this.amountMines = difficulty.getAmountMines();
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public int getColumns() {
-        return columns;
+    public Dimension getDimension() {
+        return new Dimension(rows, columns);
     }
 }
 

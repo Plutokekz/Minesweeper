@@ -1,4 +1,6 @@
-package objects;
+package objects.data;
+
+import objects.Difficulty;
 
 public class Difficulties {
 

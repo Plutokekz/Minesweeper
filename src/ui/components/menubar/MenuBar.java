@@ -1,16 +1,21 @@
-package ui.components;
+package ui.components.menubar;
 
-import objects.Difficulties;
 import objects.Difficulty;
-import objects.Fonts;
+import objects.GameAction;
+import objects.data.Difficulties;
+import objects.data.Fonts;
+import objects.exceptions.NoCoordinatesException;
+import objects.type.ActionType;
+import ui.components.FieldUI;
+import ui.components.panels.CustomDifficultyDialogPanel;
 
 import javax.swing.*;
 
 public class MenuBar extends JMenuBar {
-    private final FieldPanel fieldPanel;
+    private final FieldUI fieldUI;
 
-    public MenuBar(FieldPanel fieldPanel) {
-        this.fieldPanel = fieldPanel;
+    public MenuBar(FieldUI fieldUI) {
+        this.fieldUI = fieldUI;
         setupGUI();
     }
 
@@ -29,28 +34,50 @@ public class MenuBar extends JMenuBar {
         //Difficulties: Easy
         JMenuItem easy = new JMenuItem("Easy");
         easy.setFont(Fonts.FontDefault);
-        easy.addActionListener(e -> fieldPanel.setDifficulty(Difficulties.easy));
+        easy.addActionListener(e -> {
+            try {
+                fieldUI.update(new GameAction(ActionType.UpdateDifficulty, Difficulties.easy));
+            } catch (NoCoordinatesException noCoordinatesException) {
+                noCoordinatesException.printStackTrace();
+            }
+        });
 
         //Difficulties: Normal
         JMenuItem normal = new JMenuItem("Normal");
         normal.setFont(Fonts.FontDefault);
-        normal.addActionListener(e -> fieldPanel.setDifficulty(Difficulties.normal));
+        normal.addActionListener(e -> {
+            try {
+                fieldUI.update(new GameAction(ActionType.UpdateDifficulty, Difficulties.normal));
+            } catch (NoCoordinatesException noCoordinatesException) {
+                noCoordinatesException.printStackTrace();
+            }
+        });
 
         //Difficulties: Hard
         JMenuItem hard = new JMenuItem("Hard");
         hard.setFont(Fonts.FontDefault);
-        hard.addActionListener(e -> fieldPanel.setDifficulty(Difficulties.hard));
+        hard.addActionListener(e -> {
+            try {
+                fieldUI.update(new GameAction(ActionType.UpdateDifficulty, Difficulties.hard));
+            } catch (NoCoordinatesException noCoordinatesException) {
+                noCoordinatesException.printStackTrace();
+            }
+        });
 
 
         //Difficulties: Custom
         JMenuItem custom = new JMenuItem("Custom");
         custom.setFont(Fonts.FontDefault);
-        CustomDifficultyDialog customDifficultyDialog = new CustomDifficultyDialog();
         custom.addActionListener(e -> {
-            JOptionPane.showMessageDialog(fieldPanel.getGui(), customDifficultyDialog, "Custom Size", JOptionPane.PLAIN_MESSAGE);
-            Difficulty difficulty = customDifficultyDialog.getDifficulty();
+            CustomDifficultyDialogPanel customDifficultyDialogPanel = new CustomDifficultyDialogPanel();
+            JOptionPane.showMessageDialog(fieldUI.getGui(), customDifficultyDialogPanel, "Custom Size", JOptionPane.PLAIN_MESSAGE);
+            Difficulty difficulty = customDifficultyDialogPanel.getDifficulty();
 
-            fieldPanel.setDifficulty(difficulty);
+            try {
+                fieldUI.update(new GameAction(ActionType.UpdateDifficulty, difficulty));
+            } catch (NoCoordinatesException noCoordinatesException) {
+                noCoordinatesException.printStackTrace();
+            }
 
             //Debug
             System.out.println("New Field with Difficulty: " + difficulty.toString());

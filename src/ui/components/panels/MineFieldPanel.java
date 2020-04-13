@@ -1,22 +1,21 @@
-package ui.components.panel;
+package ui.components.panels;
 
-import objects.Cell;
-import objects.Difficulty;
-import objects.MineField;
+import objects.*;
 import objects.assets.TileHandler;
 import objects.base.Point;
+import objects.type.GameState;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class PanelMineField extends JPanel {
+public class MineFieldPanel extends JPanel {
 
     private final MineField mineField;
 
-    public PanelMineField(LayoutManager layout, MineField mineField) {
+    public MineFieldPanel(LayoutManager layout, Difficulty difficulty) {
         super(layout);
-        this.mineField = mineField;
+        mineField = new MineField(difficulty);
     }
 
     /**
@@ -26,7 +25,8 @@ public class PanelMineField extends JPanel {
      * @return int max cell size
      */
     public int calculateMaxCellSize() {
-        return Math.min((super.getHeight()) / mineField.getColumns(), (super.getWidth()) / mineField.getRows());
+        Dimension mineFieldDimension = mineField.getDimension();
+        return (int) Math.min((super.getHeight()) / mineFieldDimension.getHeight(), (super.getWidth()) / mineFieldDimension.getWidth());
     }
 
     /**
@@ -36,7 +36,8 @@ public class PanelMineField extends JPanel {
      * @return Dimension of the JPanel
      */
     public Dimension calculatePanelMineFieldDimension(int maxCellSize) {
-        return new Dimension(maxCellSize * mineField.getRows(), maxCellSize * mineField.getColumns());
+        Dimension mineFieldDimension = mineField.getDimension();
+        return new Dimension(maxCellSize * (int) mineFieldDimension.getWidth(), maxCellSize * (int) mineFieldDimension.getHeight());
     }
 
     /**
@@ -50,7 +51,9 @@ public class PanelMineField extends JPanel {
         return new Point((int) (super.getWidth() - imageDimension.getWidth()) / 2, (int) (super.getHeight() - imageDimension.getHeight()) / 2);
     }
 
-    //Drawing Magic
+    /**
+     * Draws the Minefield on the Graphics g
+     */
     private void doDrawing(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
@@ -59,15 +62,17 @@ public class PanelMineField extends JPanel {
         Point startPoint = calculateOffsetPoint(imageDimension);
         int startPointY = startPoint.getY();
 
-        for (int x = 0; x < mineField.getRows(); x++) {
-            for (int y = 0; y < mineField.getColumns(); y++) {
+        Dimension mineFieldDimension = mineField.getDimension();
+
+        for (int x = 0; x < mineFieldDimension.getWidth(); x++) {
+            for (int y = 0; y < mineFieldDimension.getHeight(); y++) {
 
 
                 BufferedImage currentImageCellTop, currentImageCellBottom, currentImageCellMid = null, currentImageFlag = null;
                 currentImageCellBottom = TileHandler.SPRITE_BOTTOM;
                 currentImageCellTop = TileHandler.SPRITE_TOP;
 
-                if (mineField.getField() != null) {
+                if (!mineField.isEmpty()) {
                     Cell currentCell = mineField.getFromField(x, y);
                     if (currentCell.isChecked()) {
                         currentImageCellMid = currentCell.getSprite();
@@ -103,13 +108,14 @@ public class PanelMineField extends JPanel {
     @Override
     public final Dimension getPreferredSize() {
         int s;
+        Dimension mineFieldDimension = mineField.getDimension();
         if (super.getWidth() == 0 || super.getHeight() == 0) {
             s = 32;
         } else
-            s = Math.max(Math.min((super.getWidth()) / mineField.getRows(), (super.getHeight()) / mineField.getColumns()), 32);
-        int calcRows = s * mineField.getRows();
-        int calcColumns = s * mineField.getColumns();
-        return new Dimension(calcRows, calcColumns);
+            s = (int) Math.max(Math.min((super.getWidth()) / mineFieldDimension.getWidth(), (super.getHeight()) / mineFieldDimension.getHeight()), 32);
+        //int calcRows = (int) (s * mineFieldDimension.getWidth());
+        //int calcColumns = (int) (s * mineFieldDimension.getHeight());
+        return new Dimension((int) (s * mineFieldDimension.getWidth()), (int) (s * mineFieldDimension.getHeight()));
     }
 
     /**
@@ -130,12 +136,27 @@ public class PanelMineField extends JPanel {
         return dImg;
     }
 
-    public MineField getMineField() {
-        return mineField;
+    public MineFieldState getMineFieldState() {
+        return mineField.getMineFieldState();
     }
 
-    public void setDifficulty(Difficulty difficulty) {
-        mineField.setDifficulty(difficulty);
+    public void debugShowAll() {
+        mineField.showField();
+        revalidate();
+        repaint();
+    }
+
+    /**
+     * Updates the minefield by the given GameAction
+     * and revalidate ans repaints the JPanel
+     *
+     * @param gameAction tu update the minefield
+     */
+    public GameState update(GameAction gameAction) {
+        GameState state = mineField.update(gameAction);
+        revalidate();
+        repaint();
+        return state;
     }
 
 }
