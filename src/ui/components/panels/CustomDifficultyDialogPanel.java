@@ -1,6 +1,7 @@
 package ui.components.panels;
 
 import objects.Difficulty;
+import objects.assets.lang.ResourcesLoader;
 import objects.data.Difficulties;
 import objects.data.Fonts;
 import ui.components.textfield.JNumberTextField;
@@ -14,9 +15,9 @@ public class CustomDifficultyDialogPanel extends JPanel {
     private final JNumberTextField heightText = new JNumberTextField();
     private final JNumberTextField amountMinesText = new JNumberTextField();
 
-    private final JLabel widthLabel = new JLabel("width:");
-    private final JLabel heightLabel = new JLabel("height:");
-    private final JLabel amountMinesLabel = new JLabel("mines:");
+    private final JLabel widthLabel = new JLabel(ResourcesLoader.RESOURCE_BUNDLE.getString("widthLabel") + ":");
+    private final JLabel heightLabel = new JLabel(ResourcesLoader.RESOURCE_BUNDLE.getString("heightLabel") + ":");
+    private final JLabel amountMinesLabel = new JLabel(ResourcesLoader.RESOURCE_BUNDLE.getString("mineLabel") + ":");
 
     public CustomDifficultyDialogPanel() {
         super(new GridLayout(3, 3));

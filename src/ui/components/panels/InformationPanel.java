@@ -1,5 +1,6 @@
 package ui.components.panels;
 
+import objects.assets.lang.ResourcesLoader;
 import objects.data.Fonts;
 import ui.components.runnables.Counter;
 
@@ -21,10 +22,10 @@ public class InformationPanel extends JPanel {
     }
 
     private void setupUI() {
-        resetButton = new JButton("Restart");
+        resetButton = new JButton(ResourcesLoader.RESOURCE_BUNDLE.getString("restartButton"));
         resetButton.setFont(Fonts.FontDefault);
         resetButton.setFocusPainted(false);
-        minesRemainingCounter = new JLabel("Mines: 00");
+        minesRemainingCounter = new JLabel(ResourcesLoader.RESOURCE_BUNDLE.getString("remainingMinesLabel") + ": 00");
         minesRemainingCounter.setFont(Fonts.FontDefault);
         timeCounter = new JLabel("00:00");
         timeCounter.setFont(Fonts.FontDefault);
@@ -40,7 +41,7 @@ public class InformationPanel extends JPanel {
         if (remainingMines / 10 == 0) {
             remainingMinesString = "0" + remainingMinesString;
         }
-        minesRemainingCounter.setText("Mines: " + remainingMinesString);
+        minesRemainingCounter.setText(ResourcesLoader.RESOURCE_BUNDLE.getString("remainingMinesLabel") + ": " + remainingMinesString);
     }
 
     public void setTime(int seconds) {
@@ -62,7 +63,7 @@ public class InformationPanel extends JPanel {
     }
 
     public void reset() {
-        minesRemainingCounter.setText("Mines: 00");
+        minesRemainingCounter.setText(ResourcesLoader.RESOURCE_BUNDLE.getString("remainingMinesLabel") + ": 00");
         timeCounter.setText("00:00");
     }
 
