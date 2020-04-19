@@ -3,11 +3,14 @@ package ui.components.listeners;
 import objects.GameAction;
 import objects.MineFieldState;
 import objects.assets.TileHandler;
+import objects.assets.lang.ResourcesLoader;
 import objects.base.Point;
 import objects.type.ActionType;
 import objects.type.GameState;
 import ui.components.panels.InformationPanel;
+import ui.components.panels.LosPanel;
 import ui.components.panels.MineFieldPanel;
+import ui.components.panels.WinPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,6 +56,8 @@ public class CustomMouseAdapter extends MouseAdapter {
         // Right Click
         else if (e.getButton() == 3) {
             state = rightClick(mineFieldPanel, x, y);
+        } else if (e.getButton() == 4) {
+            state = GameState.Win;
         }
 
 
@@ -60,18 +65,13 @@ public class CustomMouseAdapter extends MouseAdapter {
         switch (state) {
             case Lose:
                 informationPanel.counter.stop();
-                JOptionPane.showConfirmDialog(mineFieldPanel, new JLabel("Time played: " + informationPanel.getTimeCounterText()), "You Lost !", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
+                LosPanel losPanel = new LosPanel(informationPanel.getTimeCounterText());
+                JOptionPane.showConfirmDialog(mineFieldPanel, losPanel, ResourcesLoader.RESOURCE_BUNDLE.getString("lost"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
                 break;
 
             case Win:
-                informationPanel.counter.stop();
-                JTextField name = new JTextField();
-                final JComponent[] inputs = new JComponent[]{
-                        new JLabel("Your Time: " + informationPanel.getTimeCounterText()),
-                        new JLabel("Enter your name: "),
-                        name
-                };
-                JOptionPane.showConfirmDialog(mineFieldPanel, inputs, "You Won !", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
+                WinPanel winPanel = new WinPanel(informationPanel.getTimeCounterText());
+                JOptionPane.showConfirmDialog(mineFieldPanel, winPanel, ResourcesLoader.RESOURCE_BUNDLE.getString("win"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
                 break;
         }
 

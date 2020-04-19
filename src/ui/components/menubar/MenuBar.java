@@ -2,6 +2,8 @@ package ui.components.menubar;
 
 import objects.Difficulty;
 import objects.GameAction;
+import objects.MyProperties;
+import objects.assets.TileHandler;
 import objects.assets.lang.ResourcesLoader;
 import objects.data.Difficulties;
 import objects.data.Fonts;
@@ -9,8 +11,10 @@ import objects.exceptions.NoCoordinatesException;
 import objects.type.ActionType;
 import ui.components.FieldUI;
 import ui.components.panels.CustomDifficultyDialogPanel;
+import ui.components.panels.RestartPanel;
 
 import javax.swing.*;
+import java.io.IOException;
 
 public class MenuBar extends JMenuBar {
     private final FieldUI fieldUI;
@@ -93,29 +97,50 @@ public class MenuBar extends JMenuBar {
 
 
         //Textures
-        JMenu textures = new JMenu(ResourcesLoader.RESOURCE_BUNDLE.getString("texturesLabel"));
-        textures.setFont(Fonts.FontDefault);
+        JMenu language = new JMenu(ResourcesLoader.RESOURCE_BUNDLE.getString("language"));
+        language.setFont(Fonts.FontDefault);
+
         //Texture: Background
-        JMenuItem background = new JMenuItem(ResourcesLoader.RESOURCE_BUNDLE.getString("backgroundOptionLabel"));
-        background.setFont(Fonts.FontDefault);
+        JMenuItem german = new JMenuItem(ResourcesLoader.RESOURCE_BUNDLE.getString("german"));
+        german.setFont(Fonts.FontDefault);
+        german.addActionListener(e -> {
+            try {
+                MyProperties.setLocal("de");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            JOptionPane.showConfirmDialog(null, new RestartPanel(), ResourcesLoader.RESOURCE_BUNDLE.getString("info"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
+        });
 
         //Texture: Mine
-        JMenuItem mine = new JMenuItem(ResourcesLoader.RESOURCE_BUNDLE.getString("mineOptionLabel"));
-        mine.setFont(Fonts.FontDefault);
+        JMenuItem english = new JMenuItem(ResourcesLoader.RESOURCE_BUNDLE.getString("english"));
+        english.setFont(Fonts.FontDefault);
+        english.addActionListener(e -> {
+            try {
+                MyProperties.setLocal("en");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            JOptionPane.showConfirmDialog(null, new RestartPanel(), ResourcesLoader.RESOURCE_BUNDLE.getString("info"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
+        });
 
         //Texture: Top
-        JMenuItem cellTop = new JMenuItem(ResourcesLoader.RESOURCE_BUNDLE.getString("cellCellingOptionLabel"));
-        cellTop.setFont(Fonts.FontDefault);
+        JMenuItem korean = new JMenuItem(ResourcesLoader.RESOURCE_BUNDLE.getString("korean"));
+        korean.setFont(Fonts.FontDefault);
+        korean.addActionListener(e -> {
+            try {
+                MyProperties.setLocal("ko");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            JOptionPane.showConfirmDialog(null, new RestartPanel(), ResourcesLoader.RESOURCE_BUNDLE.getString("info"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
+        });
 
-        //Texture: Flag
-        JMenuItem flag = new JMenuItem(ResourcesLoader.RESOURCE_BUNDLE.getString("flagOptionLabel"));
-        flag.setFont(Fonts.FontDefault);
 
         //Adding to Textures Menu
-        textures.add(background);
-        textures.add(mine);
-        textures.add(cellTop);
-        textures.add(flag);
+        language.add(english);
+        language.add(german);
+        language.add(korean);
 
 
         //Exit option
@@ -125,7 +150,7 @@ public class MenuBar extends JMenuBar {
         exitMenuItem.addActionListener((event) -> System.exit(0));
 
         //Adding to Option Menu
-        optionsMenu.add(textures);
+        optionsMenu.add(language);
         optionsMenu.add(difficulties);
         optionsMenu.add(exitMenuItem);
 

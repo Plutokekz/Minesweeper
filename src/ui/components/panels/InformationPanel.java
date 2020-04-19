@@ -14,6 +14,7 @@ public class InformationPanel extends JPanel {
     private JButton resetButton;
     private JLabel timeCounter, minesRemainingCounter;
     public final Counter counter;
+    private Integer time;
 
     public InformationPanel() {
         super(new FlowLayout(FlowLayout.CENTER, 100, 0)); //TODO make the TopPanel size change dynamically
@@ -45,6 +46,7 @@ public class InformationPanel extends JPanel {
     }
 
     public void setTime(int seconds) {
+        time = seconds;
         int min = seconds / 60;
         int sec = seconds % 60;
         String minutesString = Integer.toString(min);
@@ -60,6 +62,10 @@ public class InformationPanel extends JPanel {
 
     public String getTimeCounterText() {
         return timeCounter.getText();
+    }
+
+    public int getTimeCounterInteger() {
+        return time;
     }
 
     public void reset() {
