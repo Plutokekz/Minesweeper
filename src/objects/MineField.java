@@ -14,6 +14,7 @@ public class MineField {
 
     private Field field;
     private int actualMinesRemaining, minesRemaining, amountMines;
+    private final Difficulty difficulty;
 
 
     /**
@@ -28,6 +29,7 @@ public class MineField {
         this.actualMinesRemaining = difficulty.getAmountMines();
         this.minesRemaining = difficulty.getAmountMines();
         this.amountMines = difficulty.getAmountMines();
+        this.difficulty = difficulty;
     }
 
 
@@ -254,7 +256,7 @@ public class MineField {
                 reset();
                 return GameState.Reset;
             case UpdateDifficulty:
-                if (!gameAction.getDifficulty().equals(new Difficulty(rows, columns, amountMines))) {
+                if (!gameAction.getDifficulty().equals(difficulty)) {
                     setDifficulty(gameAction.getDifficulty());
                 }
                 reset();
@@ -296,6 +298,19 @@ public class MineField {
 
     public MineFieldState getMineFieldState() {
         return new MineFieldState(rows, columns, minesRemaining);
+    }
+
+    public String getDifficultyString() {
+        switch (difficulty.getType()) {
+            case EASY:
+                return "easy";
+            case NORMAL:
+                return "normal";
+            case HARD:
+                return "hard";
+            default:
+                return "custom";
+        }
     }
 
     public boolean isEmpty() {

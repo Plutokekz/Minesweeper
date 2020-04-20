@@ -7,6 +7,7 @@ import objects.assets.lang.ResourcesLoader;
 import objects.base.Point;
 import objects.type.ActionType;
 import objects.type.GameState;
+import ui.components.FieldUI;
 import ui.components.panels.InformationPanel;
 import ui.components.panels.LosPanel;
 import ui.components.panels.MineFieldPanel;
@@ -20,11 +21,12 @@ import java.awt.event.MouseEvent;
 public class CustomMouseAdapter extends MouseAdapter {
 
     private final InformationPanel informationPanel;
-
+    private final FieldUI fieldUI;
     //TODO add java docs
 
-    public CustomMouseAdapter(InformationPanel informationPanel) {
+    public CustomMouseAdapter(InformationPanel informationPanel, FieldUI fieldUI) {
         this.informationPanel = informationPanel;
+        this.fieldUI = fieldUI;
     }
 
 
@@ -72,6 +74,12 @@ public class CustomMouseAdapter extends MouseAdapter {
             case Win:
                 WinPanel winPanel = new WinPanel(informationPanel.getTimeCounterText());
                 JOptionPane.showConfirmDialog(mineFieldPanel, winPanel, ResourcesLoader.RESOURCE_BUNDLE.getString("win"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
+
+                String name = winPanel.getName();
+                String difficulty = mineFieldPanel.getDifficultyString();
+                int time = informationPanel.getTimeCounterInteger();
+
+                fieldUI.showScoreBoard();
                 break;
         }
 

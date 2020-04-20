@@ -5,23 +5,64 @@ import objects.data.Difficulties;
 import objects.exceptions.NoCoordinatesException;
 import objects.type.ActionType;
 import objects.type.GameState;
+import ui.components.labels.ScoreObject;
 import ui.components.listeners.CustomMouseAdapter;
 import ui.components.panels.InformationPanel;
 import ui.components.panels.MineFieldPanel;
+import ui.components.panels.ScoreBoardPanel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class FieldUI {
 
-    private final JPanel gui = new JPanel(new BorderLayout(3, 3));
+    private final JPanel gui;
+    private final JPanel switchPanel;
+    private final CardLayout cardLayout;
+    private final ScoreBoardPanel scoreBoardPanel;
     private MineFieldPanel mineFieldPanel;
     private InformationPanel informationPanel;
 
 
     public FieldUI() {
+        cardLayout = new CardLayout();
+        switchPanel = new JPanel(cardLayout);
+        gui = new JPanel(new BorderLayout(3, 3));
+        scoreBoardPanel = new ScoreBoardPanel();
         initializeGui();
+    }
+
+    public void showGame() {
+        cardLayout.show(switchPanel, "game");
+    }
+
+    public void showScoreBoard() {
+        ArrayList<ScoreObject> scoreObjects = new ArrayList<>();
+        Random rand = new Random();
+        for (int i = 0; i < 1000; i++) {
+            String difficulty = "";
+            int coin = rand.nextInt(3);
+            switch (coin) {
+                case 0:
+                    difficulty = "easy";
+                    break;
+                case 1:
+                    difficulty = "normal";
+                    break;
+                case 2:
+                    difficulty = "hard";
+                    break;
+                default:
+                    difficulty = "custom";
+                    break;
+            }
+            scoreObjects.add(new ScoreObject("plutokekz", i, difficulty));
+        }
+        cardLayout.show(switchPanel, "score");
+        scoreBoardPanel.setListModel(scoreObjects);
     }
 
     public final void initializeGui() {
@@ -32,7 +73,10 @@ public class FieldUI {
         // setting up PanelMineField
         mineFieldPanel = new MineFieldPanel(new CardLayout(10, 10), Difficulties.easy);
         mineFieldPanel.setBackground(new Color(142, 143, 144, 255));
-        gui.add(mineFieldPanel);
+        switchPanel.add(mineFieldPanel, "game");
+
+        switchPanel.add(scoreBoardPanel, "score");
+        gui.add(switchPanel);
 
         //setting up PanelTop
         informationPanel = new InformationPanel();
@@ -47,7 +91,7 @@ public class FieldUI {
             }
         });
         //Add Mouse Adapter to panelMineField
-        mineFieldPanel.addMouseListener(new CustomMouseAdapter(informationPanel));
+        mineFieldPanel.addMouseListener(new CustomMouseAdapter(informationPanel, this));
     }
 
     private void reset() throws NoCoordinatesException {
@@ -57,6 +101,7 @@ public class FieldUI {
 
         //Rest TopPanel after Thread as stopped
         informationPanel.reset();
+        showGame();
 
     }
 
@@ -79,6 +124,5 @@ public class FieldUI {
     public final JComponent getGui() {
         return gui;
     }
-
 
 }

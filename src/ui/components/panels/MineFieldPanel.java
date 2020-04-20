@@ -140,6 +140,10 @@ public class MineFieldPanel extends JPanel {
         return mineField.getMineFieldState();
     }
 
+    public String getDifficultyString() {
+        return mineField.getDifficultyString();
+    }
+
     public void debugShowAll() {
         mineField.showField();
         revalidate();

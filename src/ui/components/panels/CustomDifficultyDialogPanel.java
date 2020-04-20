@@ -4,6 +4,7 @@ import objects.Difficulty;
 import objects.assets.lang.ResourcesLoader;
 import objects.data.Difficulties;
 import objects.data.Fonts;
+import objects.type.DifficultyType;
 import ui.components.textfield.JNumberTextField;
 
 import javax.swing.*;
@@ -57,7 +58,7 @@ public class CustomDifficultyDialogPanel extends JPanel {
             amountMines = amountMinesText.getNumber();
 
             if (width >= 8 && height >= 8 && width * height >= amountMines + 10 && width <= 30 && height <= 24 && amountMines >= 10 && amountMines <= 667) {
-                return new Difficulty(width, height, amountMines);
+                return new Difficulty(width, height, amountMines, DifficultyType.CUSTOM);
             }
 
         }

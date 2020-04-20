@@ -1,6 +1,10 @@
 package objects;
 
+import objects.type.DifficultyType;
+
 public class Difficulty extends MineFieldState {
+
+    private final DifficultyType type;
 
     /**
      * The Difficulty for the Minefield Class
@@ -10,8 +14,9 @@ public class Difficulty extends MineFieldState {
      * @param amountMines of the Minefield
      * @see MineField
      */
-    public Difficulty(int width, int height, int amountMines) {
+    public Difficulty(int width, int height, int amountMines, DifficultyType type) {
         super(width, height, amountMines);
+        this.type = type;
     }
 
     @Override
@@ -30,5 +35,9 @@ public class Difficulty extends MineFieldState {
                 ", height=" + super.getHeight() +
                 ", amountMines=" + super.getAmountMines() +
                 '}';
+    }
+
+    public DifficultyType getType() {
+        return this.type;
     }
 }
