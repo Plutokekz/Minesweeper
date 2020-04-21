@@ -14,7 +14,7 @@ public class MineField {
 
     private Field field;
     private int actualMinesRemaining, minesRemaining, amountMines;
-    private final Difficulty difficulty;
+    private Difficulty difficulty;
 
 
     /**
@@ -233,6 +233,7 @@ public class MineField {
         this.columns = difficulty.getHeight();
         this.rows = difficulty.getWidth();
         this.amountMines = difficulty.getAmountMines();
+        this.difficulty = difficulty;
     }
 
     /**

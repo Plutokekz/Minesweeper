@@ -10,12 +10,12 @@ import ui.components.listeners.CustomMouseAdapter;
 import ui.components.panels.InformationPanel;
 import ui.components.panels.MineFieldPanel;
 import ui.components.panels.ScoreBoardPanel;
+import util.ScoreBoardController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class FieldUI {
 
@@ -25,6 +25,7 @@ public class FieldUI {
     private final ScoreBoardPanel scoreBoardPanel;
     private MineFieldPanel mineFieldPanel;
     private InformationPanel informationPanel;
+    private ScoreBoardController scoreBoardController;
 
 
     public FieldUI() {
@@ -41,26 +42,8 @@ public class FieldUI {
 
     public void showScoreBoard() {
         ArrayList<ScoreObject> scoreObjects = new ArrayList<>();
-        Random rand = new Random();
-        for (int i = 0; i < 1000; i++) {
-            String difficulty = "";
-            int coin = rand.nextInt(3);
-            switch (coin) {
-                case 0:
-                    difficulty = "easy";
-                    break;
-                case 1:
-                    difficulty = "normal";
-                    break;
-                case 2:
-                    difficulty = "hard";
-                    break;
-                default:
-                    difficulty = "custom";
-                    break;
-            }
-            scoreObjects.add(new ScoreObject("plutokekz", i, difficulty));
-        }
+        ScoreBoardController scoreBoardController = new ScoreBoardController();
+        scoreBoardController.getScoreBoard(scoreObjects);
         cardLayout.show(switchPanel, "score");
         scoreBoardPanel.setListModel(scoreObjects);
     }
@@ -91,7 +74,7 @@ public class FieldUI {
             }
         });
         //Add Mouse Adapter to panelMineField
-        mineFieldPanel.addMouseListener(new CustomMouseAdapter(informationPanel, this));
+        mineFieldPanel.addMouseListener(new CustomMouseAdapter(informationPanel, this, scoreBoardController));
     }
 
     private void reset() throws NoCoordinatesException {

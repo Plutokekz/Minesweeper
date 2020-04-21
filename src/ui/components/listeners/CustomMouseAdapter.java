@@ -12,6 +12,7 @@ import ui.components.panels.InformationPanel;
 import ui.components.panels.LosPanel;
 import ui.components.panels.MineFieldPanel;
 import ui.components.panels.WinPanel;
+import util.ScoreBoardController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,11 +22,13 @@ import java.awt.event.MouseEvent;
 public class CustomMouseAdapter extends MouseAdapter {
 
     private final InformationPanel informationPanel;
+    private final ScoreBoardController scoreBoardController;
     private final FieldUI fieldUI;
     //TODO add java docs
 
-    public CustomMouseAdapter(InformationPanel informationPanel, FieldUI fieldUI) {
+    public CustomMouseAdapter(InformationPanel informationPanel, FieldUI fieldUI, ScoreBoardController scoreBoardController) {
         this.informationPanel = informationPanel;
+        this.scoreBoardController = scoreBoardController;
         this.fieldUI = fieldUI;
     }
 
@@ -75,11 +78,15 @@ public class CustomMouseAdapter extends MouseAdapter {
                 WinPanel winPanel = new WinPanel(informationPanel.getTimeCounterText());
                 JOptionPane.showConfirmDialog(mineFieldPanel, winPanel, ResourcesLoader.RESOURCE_BUNDLE.getString("win"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
 
+                //Load play record and save it in db
                 String name = winPanel.getName();
                 String difficulty = mineFieldPanel.getDifficultyString();
                 int time = informationPanel.getTimeCounterInteger();
+                ScoreBoardController scoreBoardController = new ScoreBoardController();
+                scoreBoardController.setScoreBoard(name, difficulty, time);
 
                 fieldUI.showScoreBoard();
+
                 break;
         }
 
