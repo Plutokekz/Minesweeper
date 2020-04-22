@@ -1,6 +1,6 @@
 package objects.base;
 
-import objects.Cell;
+import objects.data.Cell;
 
 public class Field {
 

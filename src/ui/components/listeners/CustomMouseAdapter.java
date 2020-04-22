@@ -1,10 +1,10 @@
 package ui.components.listeners;
 
-import objects.GameAction;
-import objects.MineFieldState;
 import objects.assets.TileHandler;
 import objects.assets.lang.ResourcesLoader;
 import objects.base.Point;
+import objects.data.GameAction;
+import objects.minefield.MineFieldState;
 import objects.type.ActionType;
 import objects.type.GameState;
 import ui.components.FieldUI;
@@ -12,7 +12,6 @@ import ui.components.panels.InformationPanel;
 import ui.components.panels.LosPanel;
 import ui.components.panels.MineFieldPanel;
 import ui.components.panels.WinPanel;
-import util.ScoreBoardController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,13 +21,11 @@ import java.awt.event.MouseEvent;
 public class CustomMouseAdapter extends MouseAdapter {
 
     private final InformationPanel informationPanel;
-    private final ScoreBoardController scoreBoardController;
     private final FieldUI fieldUI;
     //TODO add java docs
 
-    public CustomMouseAdapter(InformationPanel informationPanel, FieldUI fieldUI, ScoreBoardController scoreBoardController) {
+    public CustomMouseAdapter(InformationPanel informationPanel, FieldUI fieldUI) {
         this.informationPanel = informationPanel;
-        this.scoreBoardController = scoreBoardController;
         this.fieldUI = fieldUI;
     }
 
@@ -75,18 +72,11 @@ public class CustomMouseAdapter extends MouseAdapter {
                 break;
 
             case Win:
+                informationPanel.counter.stop();
                 WinPanel winPanel = new WinPanel(informationPanel.getTimeCounterText());
                 JOptionPane.showConfirmDialog(mineFieldPanel, winPanel, ResourcesLoader.RESOURCE_BUNDLE.getString("win"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
-
-                //Load play record and save it in db
-                String name = winPanel.getName();
-                String difficulty = mineFieldPanel.getDifficultyString();
-                int time = informationPanel.getTimeCounterInteger();
-                ScoreBoardController scoreBoardController = new ScoreBoardController();
-                scoreBoardController.setScoreBoard(name, difficulty, time);
-
+                fieldUI.addScore(winPanel.getName(), informationPanel.getTimeCounterInteger(), mineFieldPanel.getDifficultyInt());
                 fieldUI.showScoreBoard();
-
                 break;
         }
 

@@ -1,5 +1,7 @@
-package objects;
+package objects.data;
 
+import objects.minefield.MineField;
+import objects.minefield.MineFieldState;
 import objects.type.DifficultyType;
 
 public class Difficulty extends MineFieldState {

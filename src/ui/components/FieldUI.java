@@ -1,21 +1,18 @@
 package ui.components;
 
-import objects.GameAction;
 import objects.data.Difficulties;
+import objects.data.GameAction;
 import objects.exceptions.NoCoordinatesException;
 import objects.type.ActionType;
 import objects.type.GameState;
-import ui.components.labels.ScoreObject;
 import ui.components.listeners.CustomMouseAdapter;
 import ui.components.panels.InformationPanel;
 import ui.components.panels.MineFieldPanel;
 import ui.components.panels.ScoreBoardPanel;
-import util.ScoreBoardController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class FieldUI {
 
@@ -25,7 +22,6 @@ public class FieldUI {
     private final ScoreBoardPanel scoreBoardPanel;
     private MineFieldPanel mineFieldPanel;
     private InformationPanel informationPanel;
-    private ScoreBoardController scoreBoardController;
 
 
     public FieldUI() {
@@ -33,6 +29,7 @@ public class FieldUI {
         switchPanel = new JPanel(cardLayout);
         gui = new JPanel(new BorderLayout(3, 3));
         scoreBoardPanel = new ScoreBoardPanel();
+        scoreBoardPanel.createDatabase();
         initializeGui();
     }
 
@@ -40,12 +37,13 @@ public class FieldUI {
         cardLayout.show(switchPanel, "game");
     }
 
+    public void addScore(String name, int time, int difficulty) {
+        scoreBoardPanel.addToDatabase(name, time, difficulty);
+    }
+
     public void showScoreBoard() {
-        ArrayList<ScoreObject> scoreObjects = new ArrayList<>();
-        ScoreBoardController scoreBoardController = new ScoreBoardController();
-        scoreBoardController.getScoreBoard(scoreObjects);
+        scoreBoardPanel.setListModel();
         cardLayout.show(switchPanel, "score");
-        scoreBoardPanel.setListModel(scoreObjects);
     }
 
     public final void initializeGui() {
@@ -74,7 +72,7 @@ public class FieldUI {
             }
         });
         //Add Mouse Adapter to panelMineField
-        mineFieldPanel.addMouseListener(new CustomMouseAdapter(informationPanel, this, scoreBoardController));
+        mineFieldPanel.addMouseListener(new CustomMouseAdapter(informationPanel, this));
     }
 
     private void reset() throws NoCoordinatesException {

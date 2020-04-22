@@ -1,14 +1,14 @@
 package ui.components.menubar;
 
-import objects.Difficulty;
-import objects.GameAction;
-import objects.MyProperties;
 import objects.assets.TileHandler;
 import objects.assets.lang.ResourcesLoader;
 import objects.data.Difficulties;
+import objects.data.Difficulty;
 import objects.data.Fonts;
+import objects.data.GameAction;
 import objects.exceptions.NoCoordinatesException;
 import objects.type.ActionType;
+import objects.util.MyProperties;
 import ui.components.FieldUI;
 import ui.components.panels.CustomDifficultyDialogPanel;
 import ui.components.panels.RestartPanel;
@@ -35,6 +35,10 @@ public class MenuBar extends JMenuBar {
         //Difficulties
         JMenu difficulties = new JMenu(ResourcesLoader.RESOURCE_BUNDLE.getString("difficultyLabel"));
         difficulties.setFont(Fonts.FontDefault);
+
+        JMenuItem scoreBord = new JMenuItem(ResourcesLoader.RESOURCE_BUNDLE.getString("scoreBoardLabel"));
+        scoreBord.setFont(Fonts.FontDefault);
+        scoreBord.addActionListener(e -> fieldUI.showScoreBoard());
 
         //Difficulties: Easy
         JMenuItem easy = new JMenuItem(ResourcesLoader.RESOURCE_BUNDLE.getString("easyLabel"));
@@ -150,6 +154,7 @@ public class MenuBar extends JMenuBar {
         exitMenuItem.addActionListener((event) -> System.exit(0));
 
         //Adding to Option Menu
+        optionsMenu.add(scoreBord);
         optionsMenu.add(language);
         optionsMenu.add(difficulties);
         optionsMenu.add(exitMenuItem);

@@ -1,8 +1,12 @@
 package ui.components.panels;
 
-import objects.*;
 import objects.assets.TileHandler;
 import objects.base.Point;
+import objects.data.Cell;
+import objects.data.Difficulty;
+import objects.data.GameAction;
+import objects.minefield.MineField;
+import objects.minefield.MineFieldState;
 import objects.type.GameState;
 
 import javax.swing.*;
@@ -140,8 +144,8 @@ public class MineFieldPanel extends JPanel {
         return mineField.getMineFieldState();
     }
 
-    public String getDifficultyString() {
-        return mineField.getDifficultyString();
+    public int getDifficultyInt() {
+        return mineField.getDifficultyInt();
     }
 
     public void debugShowAll() {

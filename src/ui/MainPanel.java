@@ -1,9 +1,9 @@
 package ui;
 
-import objects.MyProperties;
 import objects.assets.TileHandler;
 import objects.assets.lang.ResourcesLoader;
 import objects.data.Fonts;
+import objects.util.MyProperties;
 import ui.components.FieldUI;
 import ui.components.menubar.MenuBar;
 

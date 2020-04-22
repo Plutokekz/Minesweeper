@@ -1,4 +1,4 @@
-package objects;
+package objects.data;
 
 import objects.assets.TileHandler;
 import objects.base.Point;

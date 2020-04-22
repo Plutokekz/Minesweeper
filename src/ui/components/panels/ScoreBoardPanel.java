@@ -2,18 +2,21 @@ package ui.components.panels;
 
 import objects.assets.lang.ResourcesLoader;
 import objects.data.Fonts;
-import ui.components.labels.ScoreObject;
+import objects.util.ScoreBoardController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ScoreBoardPanel extends JPanel {
 
-    private final DefaultListModel<ScoreObject> defaultListModel;
+    private final DefaultListModel<ScoreObjectPanel> defaultListModel;
+    private final ScoreBoardController scoreBoardController;
 
     public ScoreBoardPanel() {
         super(new BorderLayout(3, 3));
+        scoreBoardController = new ScoreBoardController();
         this.defaultListModel = new DefaultListModel<>();
         JLabel name = new JLabel(ResourcesLoader.RESOURCE_BUNDLE.getString("name"));
         name.setFont(Fonts.FontDefault);
@@ -22,11 +25,11 @@ public class ScoreBoardPanel extends JPanel {
         JLabel difficulty = new JLabel(ResourcesLoader.RESOURCE_BUNDLE.getString("difficultyLabel"));
         difficulty.setFont(Fonts.FontDefault);
         JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new GridLayout(1, 3, 0, 0));
+        infoPanel.setLayout(new GridLayout(1, 3, 15, 0));
         infoPanel.add(name);
         infoPanel.add(time);
         infoPanel.add(difficulty);
-        JList<ScoreObject> scores = new JList<>(defaultListModel);
+        JList<ScoreObjectPanel> scores = new JList<>(defaultListModel);
         scores.setCellRenderer(new ScoreBoardRenderer());
         scores.setBackground(new Color(142, 143, 144, 255));
         JScrollPane scrollableList = new JScrollPane(scores);
@@ -36,19 +39,41 @@ public class ScoreBoardPanel extends JPanel {
         this.add(scoresConstrain);
     }
 
-    public void setListModel(ArrayList<ScoreObject> scoresObjects) {
-        defaultListModel.removeAllElements();
-        for (ScoreObject scoreObject : scoresObjects) {
-            defaultListModel.addElement(scoreObject);
+    public void createDatabase() {
+        try {
+            scoreBoardController.createTable();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
-
-
     }
 
-    static class ScoreBoardRenderer implements ListCellRenderer<ScoreObject> {
+    public void addToDatabase(String name, int time, int difficulty) {
+        try {
+            scoreBoardController.setScoreBoard(name, difficulty, time);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setListModel() {
+        defaultListModel.removeAllElements();
+        ArrayList<ScoreObjectPanel> scoreObjectPanels = null;
+        try {
+            scoreObjectPanels = scoreBoardController.getScoreBoard();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (scoreObjectPanels != null) {
+            for (ScoreObjectPanel scoreObjectPanel : scoreObjectPanels) {
+                defaultListModel.addElement(scoreObjectPanel);
+            }
+        }
+    }
+
+    static class ScoreBoardRenderer implements ListCellRenderer<ScoreObjectPanel> {
 
         @Override
-        public Component getListCellRendererComponent(JList<? extends ScoreObject> list, ScoreObject value, int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList<? extends ScoreObjectPanel> list, ScoreObjectPanel value, int index, boolean isSelected, boolean cellHasFocus) {
             JPanel cell = new JPanel(new GridLayout(1, 3, 15, 0));
             JLabel name = new JLabel(value.getName());
             name.setFont(Fonts.FontDefault);

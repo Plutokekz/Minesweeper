@@ -1,9 +1,10 @@
-package objects;
+package objects.minefield;
 
 
 import objects.base.Field;
 import objects.base.Point;
 import objects.base.Points;
+import objects.data.Cell;
 import objects.type.CellType;
 
 public class MineHandler {

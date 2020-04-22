@@ -1,6 +1,5 @@
 package objects.data;
 
-import objects.Difficulty;
 import objects.type.DifficultyType;
 
 public class Difficulties {

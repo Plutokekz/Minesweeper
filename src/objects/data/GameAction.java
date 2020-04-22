@@ -1,4 +1,4 @@
-package objects;
+package objects.data;
 
 import objects.exceptions.NoCoordinatesException;
 import objects.type.ActionType;

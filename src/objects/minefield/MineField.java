@@ -1,6 +1,9 @@
-package objects;
+package objects.minefield;
 
 import objects.base.Field;
+import objects.data.Cell;
+import objects.data.Difficulty;
+import objects.data.GameAction;
 import objects.type.CellType;
 import objects.type.GameState;
 
@@ -149,7 +152,7 @@ public class MineField {
                     minesRemaining--;
                     if (cellToMark.getType() == CellType.Mine) {
                         actualMinesRemaining--;
-                        if (actualMinesRemaining == 0) {
+                        if (Math.abs(actualMinesRemaining) + Math.abs(minesRemaining) == 0) {
                             System.out.println("You Won");
                             return GameState.Win;
                         }
@@ -301,16 +304,16 @@ public class MineField {
         return new MineFieldState(rows, columns, minesRemaining);
     }
 
-    public String getDifficultyString() {
+    public int getDifficultyInt() {
         switch (difficulty.getType()) {
             case EASY:
-                return "easy";
+                return 0;
             case NORMAL:
-                return "normal";
+                return 1;
             case HARD:
-                return "hard";
+                return 2;
             default:
-                return "custom";
+                return 3;
         }
     }
 

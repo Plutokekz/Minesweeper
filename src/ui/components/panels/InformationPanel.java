@@ -14,7 +14,7 @@ public class InformationPanel extends JPanel {
     private JButton resetButton;
     private JLabel timeCounter, minesRemainingCounter;
     public final Counter counter;
-    private Integer time;
+    private Integer time = 0;
 
     public InformationPanel() {
         super(new FlowLayout(FlowLayout.CENTER, 100, 0)); //TODO make the TopPanel size change dynamically
@@ -39,7 +39,9 @@ public class InformationPanel extends JPanel {
 
     public void setRemainingMines(int remainingMines) {
         String remainingMinesString = String.valueOf(remainingMines);
-        if (remainingMines / 10 == 0) {
+        if (remainingMines < 0 && remainingMines / 10 == 0) {
+            remainingMinesString = "-0" + Math.abs(remainingMines);
+        } else if (remainingMines / 10 == 0) {
             remainingMinesString = "0" + remainingMinesString;
         }
         minesRemainingCounter.setText(ResourcesLoader.RESOURCE_BUNDLE.getString("remainingMinesLabel") + ": " + remainingMinesString);

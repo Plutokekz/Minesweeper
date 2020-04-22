@@ -1,8 +1,8 @@
 package ui.components.panels;
 
-import objects.Difficulty;
 import objects.assets.lang.ResourcesLoader;
 import objects.data.Difficulties;
+import objects.data.Difficulty;
 import objects.data.Fonts;
 import objects.type.DifficultyType;
 import ui.components.textfield.JNumberTextField;
