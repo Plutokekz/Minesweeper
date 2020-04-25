@@ -53,4 +53,30 @@ public class ScoreBoardController {
         return scoreObjectPanels;
     }
 
+    public ArrayList<ScoreObjectPanel> getScoreBoard(int difficult) throws SQLException, ClassNotFoundException {
+        connect();
+        ArrayList<ScoreObjectPanel> scoreObjectPanels = new ArrayList<>();
+        String sql;
+        switch (difficult){
+            case 0:
+                sql = "SELECT * FROM score WHERE difficulty = 0 ORDER BY time";
+                break;
+            case 1:
+                sql = "SELECT * FROM score WHERE difficulty = 1 ORDER BY time";
+                break;
+            case 2:
+                sql = "SELECT * FROM score WHERE difficulty = 2 ORDER BY time";
+                break;
+            default:
+                sql = "SELECT * FROM score WHERE difficulty = 3 ORDER BY time";
+                break;
+        }
+        ResultSet rs = connection.prepareStatement(sql).executeQuery();
+        while (rs.next()) {
+            scoreObjectPanels.add(new ScoreObjectPanel(rs.getString("name"), rs.getInt("time"), rs.getInt("difficulty")));
+        }
+        close();
+        return scoreObjectPanels;
+    }
+
 }

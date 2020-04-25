@@ -70,6 +70,21 @@ public class ScoreBoardPanel extends JPanel {
         }
     }
 
+    public void setListModel(int difficulty) {
+        defaultListModel.removeAllElements();
+        ArrayList<ScoreObjectPanel> scoreObjectPanels = null;
+        try {
+            scoreObjectPanels = scoreBoardController.getScoreBoard(difficulty);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (scoreObjectPanels != null) {
+            for (ScoreObjectPanel scoreObjectPanel : scoreObjectPanels) {
+                defaultListModel.addElement(scoreObjectPanel);
+            }
+        }
+    }
+
     static class ScoreBoardRenderer implements ListCellRenderer<ScoreObjectPanel> {
 
         @Override

@@ -76,7 +76,7 @@ public class CustomMouseAdapter extends MouseAdapter {
                 WinPanel winPanel = new WinPanel(informationPanel.getTimeCounterText());
                 JOptionPane.showConfirmDialog(mineFieldPanel, winPanel, ResourcesLoader.RESOURCE_BUNDLE.getString("win"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
                 fieldUI.addScore(winPanel.getName(), informationPanel.getTimeCounterInteger(), mineFieldPanel.getDifficultyInt());
-                fieldUI.showScoreBoard();
+                fieldUI.showScoreBoard(mineFieldPanel.getDifficultyInt());
                 break;
         }
 

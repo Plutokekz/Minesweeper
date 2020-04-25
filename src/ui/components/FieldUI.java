@@ -46,6 +46,11 @@ public class FieldUI {
         cardLayout.show(switchPanel, "score");
     }
 
+    public void showScoreBoard(int difficulty) {
+        scoreBoardPanel.setListModel(difficulty);
+        cardLayout.show(switchPanel, "score");
+    }
+
     public final void initializeGui() {
 
         // set up the main GUI
