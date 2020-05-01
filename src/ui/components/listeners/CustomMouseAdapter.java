@@ -74,9 +74,11 @@ public class CustomMouseAdapter extends MouseAdapter {
             case Win:
                 informationPanel.counter.stop();
                 WinPanel winPanel = new WinPanel(informationPanel.getTimeCounterText());
-                JOptionPane.showConfirmDialog(mineFieldPanel, winPanel, ResourcesLoader.RESOURCE_BUNDLE.getString("win"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
-                fieldUI.addScore(winPanel.getName(), informationPanel.getTimeCounterInteger(), mineFieldPanel.getDifficultyInt());
-                fieldUI.showScoreBoard(mineFieldPanel.getDifficultyInt());
+                int ok = JOptionPane.showConfirmDialog(mineFieldPanel, winPanel, ResourcesLoader.RESOURCE_BUNDLE.getString("win"), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, new ImageIcon(TileHandler.SPRITE_MINE));
+                if (ok == 0) {
+                    fieldUI.addScore(winPanel.getName(), informationPanel.getTimeCounterInteger(), mineFieldPanel.getDifficultyInt());
+                    fieldUI.showScoreBoard(mineFieldPanel.getDifficultyInt());
+                }
                 break;
         }
 

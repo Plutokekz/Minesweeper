@@ -7,4 +7,5 @@ public class Points {
                                                                   new Point(-1, -1), new Point(1, -1),
                                                                   new Point(-1, 1), new Point(1, 1)};
 
+
 }

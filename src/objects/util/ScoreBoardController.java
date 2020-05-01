@@ -1,5 +1,6 @@
 package objects.util;
 
+import com.sun.istack.internal.Nullable;
 import ui.components.panels.ScoreObjectPanel;
 
 import java.sql.*;
@@ -41,6 +42,7 @@ public class ScoreBoardController {
         close();
     }
 
+    @Deprecated()
     public ArrayList<ScoreObjectPanel> getScoreBoard() throws SQLException, ClassNotFoundException {
         connect();
         ArrayList<ScoreObjectPanel> scoreObjectPanels = new ArrayList<>();
@@ -53,11 +55,11 @@ public class ScoreBoardController {
         return scoreObjectPanels;
     }
 
-    public ArrayList<ScoreObjectPanel> getScoreBoard(int difficult) throws SQLException, ClassNotFoundException {
+    public ArrayList<ScoreObjectPanel> getScoreBoard(@Nullable int difficult) throws SQLException, ClassNotFoundException {
         connect();
         ArrayList<ScoreObjectPanel> scoreObjectPanels = new ArrayList<>();
         String sql;
-        switch (difficult){
+        switch (difficult) {
             case 0:
                 sql = "SELECT * FROM score WHERE difficulty = 0 ORDER BY time";
                 break;
@@ -67,8 +69,11 @@ public class ScoreBoardController {
             case 2:
                 sql = "SELECT * FROM score WHERE difficulty = 2 ORDER BY time";
                 break;
-            default:
+            case 3:
                 sql = "SELECT * FROM score WHERE difficulty = 3 ORDER BY time";
+                break;
+            default:
+                sql = "SELECT * FROM score ORDER BY time";
                 break;
         }
         ResultSet rs = connection.prepareStatement(sql).executeQuery();

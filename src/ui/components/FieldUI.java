@@ -1,5 +1,6 @@
 package ui.components;
 
+import com.sun.istack.internal.Nullable;
 import objects.data.Difficulties;
 import objects.data.GameAction;
 import objects.exceptions.NoCoordinatesException;
@@ -46,7 +47,7 @@ public class FieldUI {
         cardLayout.show(switchPanel, "score");
     }
 
-    public void showScoreBoard(int difficulty) {
+    public void showScoreBoard(@Nullable Integer difficulty) {
         scoreBoardPanel.setListModel(difficulty);
         cardLayout.show(switchPanel, "score");
     }

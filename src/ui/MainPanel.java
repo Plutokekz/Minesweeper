@@ -27,8 +27,8 @@ public class MainPanel {
             f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             f.setLocationByPlatform(true);
             f.setIconImage(TileHandler.SPRITE_MINE);
-            //Add Menu Bar
 
+            //Add Menu Bar
             f.setJMenuBar(new MenuBar(fieldUI));
             f.pack();
             f.setMinimumSize(new Dimension(1000, 720));
