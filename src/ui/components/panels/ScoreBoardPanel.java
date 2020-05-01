@@ -1,5 +1,6 @@
 package ui.components.panels;
 
+import com.sun.istack.internal.Nullable;
 import objects.assets.lang.ResourcesLoader;
 import objects.data.Fonts;
 import objects.util.ScoreBoardController;
@@ -55,6 +56,7 @@ public class ScoreBoardPanel extends JPanel {
         }
     }
 
+
     public void setListModel() {
         defaultListModel.removeAllElements();
         ArrayList<ScoreObjectPanel> scoreObjectPanels = null;
@@ -70,7 +72,7 @@ public class ScoreBoardPanel extends JPanel {
         }
     }
 
-    public void setListModel(int difficulty) {
+    public void setListModel(@Nullable int difficulty) {
         defaultListModel.removeAllElements();
         ArrayList<ScoreObjectPanel> scoreObjectPanels = null;
         try {
